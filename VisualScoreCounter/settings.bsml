@@ -1,0 +1,22 @@
+﻿<vertical spacing="1" horizontal--fit="PreferredSize">
+	<color-setting text="100% Color" value="Color_100" hover-hint="Color associated with 100%" apply-on-change="true"></color-setting>
+	<color-setting text="99% Color"  value="Color_99"  hover-hint="Color associated with 99%"  apply-on-change="true"></color-setting>
+	<color-setting text="98% Color"  value="Color_98"  hover-hint="Color associated with 98%"  apply-on-change="true"></color-setting>
+	<color-setting text="97% Color"  value="Color_97"  hover-hint="Color associated with 97%"  apply-on-change="true"></color-setting>
+	<color-setting text="96% Color"  value="Color_96"  hover-hint="Color associated with 96%"  apply-on-change="true"></color-setting>
+	<color-setting text="95% Color"  value="Color_95"  hover-hint="Color associated with 95%"  apply-on-change="true"></color-setting>
+	<color-setting text="94% Color"  value="Color_94"  hover-hint="Color associated with 94%"  apply-on-change="true"></color-setting>
+	<color-setting text="93% Color"  value="Color_93"  hover-hint="Color associated with 93%"  apply-on-change="true"></color-setting>
+	<color-setting text="92% Color"  value="Color_92"  hover-hint="Color associated with 92%"  apply-on-change="true"></color-setting>
+	<color-setting text="91% Color"  value="Color_91"  hover-hint="Color associated with 91%"  apply-on-change="true"></color-setting>
+	<color-setting text="90% Color"  value="Color_90"  hover-hint="Color associated with 90%"  apply-on-change="true"></color-setting>
+	<color-setting text="89% Color"  value="Color_89"  hover-hint="Color associated with 89%"  apply-on-change="true"></color-setting>
+	<color-setting text="88% Color"  value="Color_88"  hover-hint="Color associated with 88%"  apply-on-change="true"></color-setting>
+	<color-setting text="88% Color"  value="Color_88"  hover-hint="Color associated with 88%"  apply-on-change="true"></color-setting>
+	<color-setting text="80% Color"  value="Color_80"  hover-hint="Color associated with 80%"  apply-on-change="true"></color-setting>
+	<color-setting text="65% Color"  value="Color_65"  hover-hint="Color associated with 65%"  apply-on-change="true"></color-setting>
+	<color-setting text="50% Color"  value="Color_50"  hover-hint="Color associated with 50%"  apply-on-change="true"></color-setting>
+	<color-setting text="35% Color"  value="Color_35"  hover-hint="Color associated with 35%"  apply-on-change="true"></color-setting>
+	<color-setting text="20% Color"  value="Color_20"  hover-hint="Color associated with 20%"  apply-on-change="true"></color-setting>
+	<color-setting text="0% Color"   value="Color_0"   hover-hint="Color associated with 0%"   apply-on-change="true"></color-setting>
+</vertical>

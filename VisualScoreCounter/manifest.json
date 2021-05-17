@@ -1,0 +1,31 @@
+﻿{
+  "$schema": "https://raw.githubusercontent.com/bsmg/BSIPA-MetadataFileSchema/master/Schema.json",
+  "id": "VisualScoreCounter",
+  "name": "VisualScoreCounter",
+  "author": "bluecurse",
+  "version": "0.0.1",
+  "description": "A configurable and readable score counter.",
+  "gameVersion": "1.13.4",
+  "dependsOn": {
+    "Counters+": "^2.2.0",
+    "BeatSaberMarkupLanguage": "^1.4.5",
+    "BSIPA": "^4.1.4"
+  },
+  "features": {
+    "CountersPlus.CustomCounter": {
+      "Name": "Visual Score Counter",
+      "Description": "A configurable and readable score counter.",
+      "CounterLocation": "VisualScoreCounter.VisualScoreCounter",
+      "ConfigDefaults": {
+        "Enabled": true,
+        "Position": "BelowMultiplier",
+        "Distance": 0
+      },
+      "BSML": {
+        "Resource": "VisualScoreCounter.settings.bsml",
+        "Host": "VisualScoreCounter.SettingsHandler",
+        "Icon": "VisualScoreCounter.Images.icon.png"
+      }
+    }
+  }
+}
