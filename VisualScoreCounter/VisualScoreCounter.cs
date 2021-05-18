@@ -14,26 +14,33 @@ using System.Linq;
 
 namespace VisualScoreCounter
 {
-    internal class VisualScoreCounter : BasicCustomCounter
+    internal class VisualScoreCounter : BasicCustomCounter, INoteEventHandler
     {
-
-        //private readonly Vector3 offset = new Vector3(0, 1.91666f, 0);
-        private readonly Vector3 offset = new Vector3(0.1f, 1.8f, 0);
-        private readonly Vector2 rankScoreOffset = new Vector2(2.0f, 6.0f);
-        private readonly Vector2 ringOffset = new Vector2(0.0f, 0.0f);
-        private readonly string multiplierImageSpriteName = "Circle";
-        private readonly Vector3 ringSize = Vector3.one * 1.175f;
 
         [Inject] private CoreGameHUDController coreGameHUD;
         [Inject] private RelativeScoreAndImmediateRankCounter relativeScoreAndImmediateRank;
 
+        // Ring vars
+        private readonly string multiplierImageSpriteName = "Circle";
+        private readonly Vector2 ringOffset = new Vector2(0.0f, 0.0f);
+        private readonly Vector3 ringSize = Vector3.one * 1.175f;
+        private ImageView progressRing;
+
+        // Classic Mode vars
+        private readonly Vector3 offset = new Vector3(0.1f, 1.8f, 0);
+        private readonly Vector2 rankScoreOffset = new Vector2(2.0f, 6.0f);
         private RankModel.Rank prevImmediateRank = RankModel.Rank.SSS;
         private float prevRelativeScore = 0.0f;
         private TextMeshProUGUI rankText;
         private TextMeshProUGUI relativeScoreText;
 
-        private ImageView progressRing;
+        // Percent Mode vars
+        private TMP_Text percentMajorText;
+        private TMP_Text percentMinorText;
+        private int prevPercentMajor;
+        private int prevPercentMinor;
 
+        // Accessors
 
         public static FieldAccessor<ScoreUIController, TextMeshProUGUI>.Accessor ScoreUIText = FieldAccessor<ScoreUIController, TextMeshProUGUI>.GetAccessor("_scoreText");
         public static FieldAccessor<CoreGameHUDController, GameObject>.Accessor SongProgressPanelGO = FieldAccessor<CoreGameHUDController, GameObject>.GetAccessor("_songProgressPanelGO");
@@ -42,6 +49,31 @@ namespace VisualScoreCounter
 
         public override void CounterInit()
         {
+
+            if (Configuration.Instance.percentMode)
+            {
+                InitPercentMode();
+            } else
+            {
+                InitClassicMode();
+            }
+        }
+
+        public override void CounterDestroy()
+        {
+            if (Configuration.Instance.percentMode)
+            {
+                //relativeScoreAndImmediateRank.relativeScoreOrImmediateRankDidChangeEvent -= UpdatePercentModeText;
+            } else
+            {
+                //relativeScoreAndImmediateRank.relativeScoreOrImmediateRankDidChangeEvent -= UpdateClassicModeText;
+            }
+            //relativeScoreAndImmediateRank.relativeScoreOrImmediateRankDidChangeEvent -= UpdateRing;
+        }
+
+        private void InitClassicMode()
+        {
+
             // Yeah this is required.
             // If the Score Counter is all alone on its own Canvas with nothing to accompany them,
             // I need to give 'em a friend or else they get shy and hide away in the void.
@@ -49,58 +81,64 @@ namespace VisualScoreCounter
 
             ScoreUIController scoreUIController = coreGameHUD.GetComponentInChildren<ScoreUIController>();
             TextMeshProUGUI old = ScoreUIText(ref scoreUIController);
+
+            // Setup Score Text
             GameObject baseGameScore = RelativeScoreGO(ref coreGameHUD);
             relativeScoreText = baseGameScore.GetComponent<TextMeshProUGUI>();
             relativeScoreText.color = Color.white;
+
+            // Setup Rank Text
             GameObject baseGameRank = ImmediateRankGO(ref coreGameHUD);
             rankText = baseGameRank.GetComponent<TextMeshProUGUI>();
             rankText.color = Color.white;
 
+            // Set up parenting
             Canvas currentCanvas = CanvasUtility.GetCanvasFromID(Settings.CanvasID);
             old.rectTransform.SetParent(currentCanvas.transform, true);
             baseGameScore.transform.SetParent(old.transform, true);
 
-            old.fontSize = 7;
+            // Hide score if we're not using it.
+            if (!Configuration.Instance.showScore)
+            {
+                UnityEngine.Object.Destroy(baseGameScore.gameObject);
+            }
+
+            // Adjust font sizes.
+            // TODO: Pull this from config?
             relativeScoreText.fontSize = 10;
             rankText.fontSize = 30;
 
+
             baseGameRank.transform.SetParent(old.transform, true);
-            
-            // TODO: Support italicized text, like the original score counter.
-
-            // TODO: Support toggling of rank/score, like the original score counter.
-            //       The following commented out code comes from ScoreCounter from Counters+
-
-            /*
-            switch (Settings.Mode)
-            {
-                case ScoreMode.RankOnly:
-                    Object.Destroy(baseGameScore.gameObject);
-                    break;
-                case ScoreMode.ScoreOnly:
-                    Object.Destroy(baseGameRank.gameObject);
-                    break;
-            }
-            */
-
             RectTransform pointsTextTransform = old.rectTransform;
-
             HUDCanvas currentSettings = CanvasUtility.GetCanvasSettingsFromID(Settings.CanvasID);
-
             Vector2 anchoredPos = CanvasUtility.GetAnchoredPositionFromConfig(Settings) + (offset * (3f / currentSettings.PositionScale));
-
             pointsTextTransform.localPosition = anchoredPos * currentSettings.PositionScale;
             pointsTextTransform.localPosition = new Vector3(pointsTextTransform.localPosition.x, pointsTextTransform.localPosition.y, 0);
             pointsTextTransform.localEulerAngles = Vector3.zero;
 
             UnityEngine.Object.Destroy(coreGameHUD.GetComponentInChildren<ImmediateRankUIPanel>());
 
+            InitPercentageRing();
+
+            // Shift text into proper positions
+            rankText.rectTransform.anchoredPosition += rankScoreOffset;
+            relativeScoreText.rectTransform.anchoredPosition += rankScoreOffset;
+
+            //relativeScoreAndImmediateRank.relativeScoreOrImmediateRankDidChangeEvent += UpdateClassicModeText;
+            UpdateClassicModeText();
+
+        }
+
+        private void InitPercentageRing()
+        {
             if (Configuration.Instance.showPercentageRing)
             {
                 // Create ring
                 var canvas = CanvasUtility.GetCanvasFromID(Settings.CanvasID);
                 if (canvas != null)
                 {
+                    HUDCanvas currentSettings = CanvasUtility.GetCanvasSettingsFromID(Settings.CanvasID);
                     Vector2 ringAnchoredPos = CanvasUtility.GetAnchoredPositionFromConfig(Settings) * currentSettings.PositionScale;
 
                     ImageView backgroundImage = CreateRing(canvas);
@@ -114,31 +152,95 @@ namespace VisualScoreCounter
                     progressRing.transform.localScale = ringSize / 10;
 
                 }
-            }
-
-            rankText.rectTransform.anchoredPosition += rankScoreOffset;
-            relativeScoreText.rectTransform.anchoredPosition += rankScoreOffset;
-
-            relativeScoreAndImmediateRank.relativeScoreOrImmediateRankDidChangeEvent += UpdateText;
-            UpdateText();
-
-
-
-            if (Configuration.Instance.showPercentageRing)
-            {
-                relativeScoreAndImmediateRank.relativeScoreOrImmediateRankDidChangeEvent += UpdateRing;
+                //relativeScoreAndImmediateRank.relativeScoreOrImmediateRankDidChangeEvent += UpdateRing;
                 UpdateRing();
             }
-
         }
+        
 
-        public override void CounterDestroy()
+        private void InitPercentMode()
         {
-            relativeScoreAndImmediateRank.relativeScoreOrImmediateRankDidChangeEvent -= UpdateText;
-            relativeScoreAndImmediateRank.relativeScoreOrImmediateRankDidChangeEvent -= UpdateRing;
+
+            // Required. We need to get a handle to the game's default score counter and destroy it.
+            _ = CanvasUtility.CreateTextFromSettings(Settings, null);
+            ScoreUIController scoreUIController = coreGameHUD.GetComponentInChildren<ScoreUIController>();
+            TextMeshProUGUI old = ScoreUIText(ref scoreUIController);
+
+            GameObject baseGameScore = RelativeScoreGO(ref coreGameHUD);
+            GameObject baseGameRank = ImmediateRankGO(ref coreGameHUD);
+
+            // Set up parenting
+            Canvas currentCanvas = CanvasUtility.GetCanvasFromID(Settings.CanvasID);
+            old.rectTransform.SetParent(currentCanvas.transform, true);
+            baseGameScore.transform.SetParent(old.transform, true);
+            baseGameRank.transform.SetParent(old.transform, true);
+
+            // Destroy Score
+            UnityEngine.Object.Destroy(baseGameScore.gameObject);
+
+            // Destroy Rank
+            UnityEngine.Object.Destroy(baseGameRank.gameObject);
+
+            if (!Configuration.Instance.showScore)
+            {
+                old.fontSize = 0;
+            }
+
+            percentMajorText = CanvasUtility.CreateTextFromSettings(Settings);
+            percentMajorText.fontSize = 7;
+            percentMinorText = CanvasUtility.CreateTextFromSettings(Settings);
+            percentMinorText.fontSize = 3;
+
+            RectTransform pointsTextTransform = old.rectTransform;
+            HUDCanvas currentSettings = CanvasUtility.GetCanvasSettingsFromID(Settings.CanvasID);
+            Vector2 anchoredPos = CanvasUtility.GetAnchoredPositionFromConfig(Settings) + (offset * (3f / currentSettings.PositionScale));
+            pointsTextTransform.localPosition = anchoredPos * currentSettings.PositionScale;
+            pointsTextTransform.localPosition = new Vector3(pointsTextTransform.localPosition.x, pointsTextTransform.localPosition.y, 0);
+            pointsTextTransform.localEulerAngles = Vector3.zero;
+            UnityEngine.Object.Destroy(coreGameHUD.GetComponentInChildren<ImmediateRankUIPanel>());
+
+            InitPercentageRing();
+
+            percentMajorText.rectTransform.anchoredPosition += new Vector2(0.0f, 0.7f);
+            percentMinorText.rectTransform.anchoredPosition += new Vector2(0.0f, -3.0f);
+
+            prevPercentMajor = -1;
+            prevPercentMinor = -1;
+            //relativeScoreAndImmediateRank.relativeScoreOrImmediateRankDidChangeEvent += UpdatePercentModeText;
+            UpdatePercentModeText();
         }
 
-        private void UpdateText()
+
+        private void UpdatePercentModeText()
+        {
+            float relativeScore = relativeScoreAndImmediateRank.relativeScore * 100;
+            int majorPercent = (int)Math.Floor(relativeScore);
+            int minorPercent = (int)((relativeScore % 1) * 100);
+            if (majorPercent != prevPercentMajor)
+            {
+                Color currentColor = GetColorForRelativeScore(relativeScore);
+                percentMajorText.text = majorPercent.ToString();
+                percentMajorText.color = currentColor;
+                prevPercentMajor = majorPercent;
+            }
+            if (minorPercent != prevPercentMinor)
+            {
+                Color nextColor;
+                if (Configuration.Instance.percentageRingShowsNextRankColor)
+                {
+                    nextColor = GetColorForRelativeScore(relativeScore + 1);
+                } else
+                {
+                    nextColor = GetColorForRelativeScore(relativeScore);
+                }
+                percentMinorText.text = minorPercent.ToString();
+                percentMinorText.color = nextColor;
+                prevPercentMinor = minorPercent;
+            }
+        }
+
+
+        private void UpdateClassicModeText()
         {
             RankModel.Rank immediateRank = relativeScoreAndImmediateRank.immediateRank;
             float relativeScore = (relativeScoreAndImmediateRank.relativeScore) * 100.0f;
@@ -319,5 +421,28 @@ namespace VisualScoreCounter
             return newImage;
         }
 
+        public void OnNoteCut(NoteData data, NoteCutInfo info)
+        {
+            if (Configuration.Instance.percentMode)
+            {
+                UpdatePercentModeText();
+            } else
+            {
+                UpdateClassicModeText();
+            }
+            UpdateRing();
+        }
+
+        public void OnNoteMiss(NoteData data)
+        {
+            if (Configuration.Instance.percentMode)
+            {
+                UpdatePercentModeText();
+            } else
+            {
+                UpdateClassicModeText();
+            }
+            UpdateRing();
+        }
     }
 }

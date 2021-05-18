@@ -26,6 +26,27 @@ namespace VisualScoreCounter
             }
         }
 
+        [UIValue("percentMode")]
+        public bool percentMode
+        {
+            get => Configuration.Instance.percentMode;
+            set
+            {
+                Configuration.Instance.percentMode = value;
+            }
+        }
+
+        [UIValue("showScore")]
+        public bool showScore
+        {
+            get => Configuration.Instance.showScore;
+            set
+            {
+                Configuration.Instance.showScore = value;
+            }
+        }
+
+
         [UIValue("Color_100")]
         public Color Color_100
         {
