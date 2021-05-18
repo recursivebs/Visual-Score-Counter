@@ -1,4 +1,6 @@
 ﻿<vertical spacing="1" horizontal--fit="PreferredSize">
+	<checkbox-setting text="% Ring Enabled" value="showPercentageRing" hover-hint="If enabled, ring will display around the Rank text showing the fractional part of the current accuracy percentage." apply-on-change="true"></checkbox-setting>
+	<checkbox-setting text="% Ring Shows Next Rank Color" value="percentageRingShowsNextRankColor" hover-hint="If enabled, ring will display color of the next rank (95.60% will cause the ring to show the 96% color)" apply-on-change="true"></checkbox-setting>
 	<color-setting text="100% Color" value="Color_100" hover-hint="Color associated with 100%" apply-on-change="true"></color-setting>
 	<color-setting text="99% Color"  value="Color_99"  hover-hint="Color associated with 99%"  apply-on-change="true"></color-setting>
 	<color-setting text="98% Color"  value="Color_98"  hover-hint="Color associated with 98%"  apply-on-change="true"></color-setting>

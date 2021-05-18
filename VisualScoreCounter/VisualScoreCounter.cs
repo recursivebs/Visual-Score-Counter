@@ -17,7 +17,9 @@ namespace VisualScoreCounter
     internal class VisualScoreCounter : BasicCustomCounter
     {
 
-        private readonly Vector3 offset = new Vector3(0, 1.91666f, 0);
+        //private readonly Vector3 offset = new Vector3(0, 1.91666f, 0);
+        private readonly Vector3 offset = new Vector3(0.1f, 1.8f, 0);
+        private readonly Vector2 rankScoreOffset = new Vector2(2.0f, 6.0f);
         private readonly Vector2 ringOffset = new Vector2(0.0f, 0.0f);
         private readonly string multiplierImageSpriteName = "Circle";
         private readonly Vector3 ringSize = Vector3.one * 1.175f;
@@ -59,7 +61,8 @@ namespace VisualScoreCounter
             baseGameScore.transform.SetParent(old.transform, true);
 
             old.fontSize = 8;
-            relativeScoreText.fontSize = 11;
+            relativeScoreText.fontSize = 10;
+            rankText.fontSize = 28;
 
             baseGameRank.transform.SetParent(old.transform, true);
             
@@ -92,29 +95,40 @@ namespace VisualScoreCounter
 
             UnityEngine.Object.Destroy(coreGameHUD.GetComponentInChildren<ImmediateRankUIPanel>());
 
-            // Create ring
-            var canvas = CanvasUtility.GetCanvasFromID(Settings.CanvasID);
-            if (canvas != null)
+            if (Configuration.Instance.showPercentageRing)
             {
-                Vector2 ringAnchoredPos = CanvasUtility.GetAnchoredPositionFromConfig(Settings) * currentSettings.PositionScale;
+                // Create ring
+                var canvas = CanvasUtility.GetCanvasFromID(Settings.CanvasID);
+                if (canvas != null)
+                {
+                    Vector2 ringAnchoredPos = CanvasUtility.GetAnchoredPositionFromConfig(Settings) * currentSettings.PositionScale;
 
-                ImageView backgroundImage = CreateRing(canvas);
-                backgroundImage.rectTransform.anchoredPosition = ringAnchoredPos;
-                backgroundImage.CrossFadeAlpha(0.05f, 1f, false);
-                backgroundImage.transform.localScale = ringSize / 10;
-                backgroundImage.type = Image.Type.Simple;
+                    ImageView backgroundImage = CreateRing(canvas);
+                    backgroundImage.rectTransform.anchoredPosition = ringAnchoredPos;
+                    backgroundImage.CrossFadeAlpha(0.05f, 1f, false);
+                    backgroundImage.transform.localScale = ringSize / 10;
+                    backgroundImage.type = Image.Type.Simple;
 
-                progressRing = CreateRing(canvas);
-                progressRing.rectTransform.anchoredPosition = ringAnchoredPos;
-                progressRing.transform.localScale = ringSize / 10;
+                    progressRing = CreateRing(canvas);
+                    progressRing.rectTransform.anchoredPosition = ringAnchoredPos;
+                    progressRing.transform.localScale = ringSize / 10;
 
+                }
             }
 
-            relativeScoreAndImmediateRank.relativeScoreOrImmediateRankDidChangeEvent += UpdateText;
-            relativeScoreAndImmediateRank.relativeScoreOrImmediateRankDidChangeEvent += UpdateRing;
+            rankText.rectTransform.anchoredPosition += rankScoreOffset;
+            relativeScoreText.rectTransform.anchoredPosition += rankScoreOffset;
 
+            relativeScoreAndImmediateRank.relativeScoreOrImmediateRankDidChangeEvent += UpdateText;
             UpdateText();
-            UpdateRing();
+
+
+
+            if (Configuration.Instance.showPercentageRing)
+            {
+                relativeScoreAndImmediateRank.relativeScoreOrImmediateRankDidChangeEvent += UpdateRing;
+                UpdateRing();
+            }
 
         }
 
@@ -131,12 +145,6 @@ namespace VisualScoreCounter
             if (Math.Floor(relativeScore) != Math.Floor(prevRelativeScore))
             {
                 Color currentColor = GetColorForRelativeScore(relativeScore);
-                Color nextColor = GetColorForRelativeScore(relativeScore + 1);
-                rankText.color = currentColor;
-                if (progressRing)
-                {
-                    progressRing.color = nextColor;
-                }
             }
             prevRelativeScore = relativeScore;
             if (immediateRank != prevImmediateRank)
@@ -270,6 +278,23 @@ namespace VisualScoreCounter
 
         public void UpdateRing()
         {
+            RankModel.Rank immediateRank = relativeScoreAndImmediateRank.immediateRank;
+            float relativeScore = (relativeScoreAndImmediateRank.relativeScore) * 100.0f;
+            if (Configuration.Instance.showPercentageRing)
+            {
+                Color nextColor;
+                if (Configuration.Instance.percentageRingShowsNextRankColor)
+                {
+                    nextColor = GetColorForRelativeScore(relativeScore + 1);
+                } else
+                {
+                    nextColor = GetColorForRelativeScore(relativeScore);
+                }
+                if (progressRing)
+                {
+                    progressRing.color = nextColor;
+                }
+            }
             float ringFillAmount = (relativeScoreAndImmediateRank.relativeScore * 100.0f) % 1;
             progressRing.fillAmount = ringFillAmount;
             progressRing.SetVerticesDirty();

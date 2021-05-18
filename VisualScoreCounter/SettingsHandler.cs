@@ -6,6 +6,26 @@ namespace VisualScoreCounter
     class SettingsHandler
     {
 
+        [UIValue("showPercentageRing")]
+        public bool showPercentageRing
+        {
+            get => Configuration.Instance.showPercentageRing;
+            set
+            {
+                Configuration.Instance.showPercentageRing = value;
+            }
+        }
+
+        [UIValue("percentageRingShowsNextRankColor")]
+        public bool percentageRingShowsNextRankColor
+        {
+            get => Configuration.Instance.percentageRingShowsNextRankColor;
+            set
+            {
+                Configuration.Instance.percentageRingShowsNextRankColor = value;
+            }
+        }
+
         [UIValue("Color_100")]
         public Color Color_100
         {
