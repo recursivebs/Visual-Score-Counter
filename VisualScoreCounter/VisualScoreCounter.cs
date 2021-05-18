@@ -60,9 +60,9 @@ namespace VisualScoreCounter
             old.rectTransform.SetParent(currentCanvas.transform, true);
             baseGameScore.transform.SetParent(old.transform, true);
 
-            old.fontSize = 8;
+            old.fontSize = 7;
             relativeScoreText.fontSize = 10;
-            rankText.fontSize = 28;
+            rankText.fontSize = 30;
 
             baseGameRank.transform.SetParent(old.transform, true);
             
