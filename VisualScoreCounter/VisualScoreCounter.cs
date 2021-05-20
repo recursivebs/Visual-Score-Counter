@@ -233,7 +233,13 @@ namespace VisualScoreCounter
                 {
                     nextColor = GetColorForRelativeScore(relativeScore);
                 }
-                percentMinorText.text = minorPercent.ToString();
+                if (minorPercent > 9)
+                {
+                    percentMinorText.text = minorPercent.ToString();
+                } else
+                {
+                    percentMinorText.text = "0" + minorPercent.ToString();
+                }
                 percentMinorText.color = nextColor;
                 prevPercentMinor = minorPercent;
             }
