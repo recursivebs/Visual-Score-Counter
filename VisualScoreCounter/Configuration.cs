@@ -8,10 +8,7 @@ namespace VisualScoreCounter
     class Configuration
     {
         public static Configuration Instance { get; set; }
-        public virtual bool showPercentageRing { get; set; } = true;
         public virtual bool percentageRingShowsNextRankColor { get; set; } = true;
-        public virtual bool percentMode { get; set; } = false;
-        public virtual bool showScore { get; set; } = true;
         public virtual Color Color_100 { get; set; } = new Color(1.0f, 69.0f/255.0f, 0.0f);
         public virtual Color Color_99 { get; set; } = new Color(1.0f, 69.0f/255.0f, 0.0f);
         public virtual Color Color_98 { get; set; } = new Color(1.0f, 166.0f / 255.0f, 0.0f);
