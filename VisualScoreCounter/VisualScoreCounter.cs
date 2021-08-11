@@ -14,7 +14,7 @@ using System.Linq;
 
 namespace VisualScoreCounter
 {
-    internal class VisualScoreCounter : BasicCustomCounter, INoteEventHandler
+    internal class VisualScoreCounter : BasicCustomCounter, INoteEventHandler, IScoreEventHandler
     {
 
         [Inject] private CoreGameHUDController coreGameHUD;
@@ -37,8 +37,8 @@ namespace VisualScoreCounter
         // Percent Mode vars
         private TMP_Text percentMajorText;
         private TMP_Text percentMinorText;
-        private int prevPercentMajor;
-        private int prevPercentMinor;
+        private int prevPercentMajor = -1;
+        private int prevPercentMinor = -1;
 
         // Accessors
 
@@ -61,14 +61,6 @@ namespace VisualScoreCounter
 
         public override void CounterDestroy()
         {
-            if (Configuration.Instance.percentMode)
-            {
-                //relativeScoreAndImmediateRank.relativeScoreOrImmediateRankDidChangeEvent -= UpdatePercentModeText;
-            } else
-            {
-                //relativeScoreAndImmediateRank.relativeScoreOrImmediateRankDidChangeEvent -= UpdateClassicModeText;
-            }
-            //relativeScoreAndImmediateRank.relativeScoreOrImmediateRankDidChangeEvent -= UpdateRing;
         }
 
         private void InitClassicMode()
@@ -206,43 +198,53 @@ namespace VisualScoreCounter
 
             prevPercentMajor = -1;
             prevPercentMinor = -1;
-            //relativeScoreAndImmediateRank.relativeScoreOrImmediateRankDidChangeEvent += UpdatePercentModeText;
             UpdatePercentModeText();
+        }
+
+
+        private float GetCurrentPercentage()
+        {
+            float relativeScore = relativeScoreAndImmediateRank.relativeScore * 100;
+            if (relativeScore <= 0)
+            {
+                relativeScore = 100.0f;
+            }
+            return relativeScore;
+        }
+
+        private int GetCurrentMajorPercentage()
+        {
+            float relativeScore = GetCurrentPercentage();
+            int majorPercent = (int)Math.Floor(relativeScore);
+            return majorPercent;
+        }
+
+        private int GetCurrentMinorPercentage()
+        {
+            float relativeScore = GetCurrentPercentage();
+            int minorPercent = (int)((relativeScore % 1) * 100);
+            return minorPercent;
         }
 
 
         private void UpdatePercentModeText()
         {
-            float relativeScore = relativeScoreAndImmediateRank.relativeScore * 100;
-            int majorPercent = (int)Math.Floor(relativeScore);
-            int minorPercent = (int)((relativeScore % 1) * 100);
-            if (majorPercent != prevPercentMajor)
+            float relativeScore = GetCurrentPercentage();
+            int majorPercent = GetCurrentMajorPercentage();
+            int minorPercent = GetCurrentMinorPercentage();
+            Color currentColor = GetColorForRelativeScore(relativeScore);
+            Color nextColor;
+            if (Configuration.Instance.percentageRingShowsNextRankColor)
             {
-                Color currentColor = GetColorForRelativeScore(relativeScore);
-                percentMajorText.text = majorPercent.ToString();
-                percentMajorText.color = currentColor;
-                prevPercentMajor = majorPercent;
-            }
-            if (minorPercent != prevPercentMinor)
+                nextColor = GetColorForRelativeScore(relativeScore + 1);
+            } else
             {
-                Color nextColor;
-                if (Configuration.Instance.percentageRingShowsNextRankColor)
-                {
-                    nextColor = GetColorForRelativeScore(relativeScore + 1);
-                } else
-                {
-                    nextColor = GetColorForRelativeScore(relativeScore);
-                }
-                if (minorPercent > 9)
-                {
-                    percentMinorText.text = minorPercent.ToString();
-                } else
-                {
-                    percentMinorText.text = "0" + minorPercent.ToString();
-                }
-                percentMinorText.color = nextColor;
-                prevPercentMinor = minorPercent;
+                nextColor = currentColor;
             }
+            percentMajorText.text = string.Format("{0:D2}", majorPercent);
+            percentMajorText.color = currentColor;
+            percentMinorText.text = string.Format("{0:D2}", minorPercent);
+            percentMinorText.color = nextColor;
         }
 
 
@@ -387,7 +389,7 @@ namespace VisualScoreCounter
         public void UpdateRing()
         {
             RankModel.Rank immediateRank = relativeScoreAndImmediateRank.immediateRank;
-            float relativeScore = (relativeScoreAndImmediateRank.relativeScore) * 100.0f;
+            float relativeScore = GetCurrentPercentage();
             if (Configuration.Instance.showPercentageRing)
             {
                 Color nextColor;
@@ -403,7 +405,7 @@ namespace VisualScoreCounter
                     progressRing.color = nextColor;
                 }
             }
-            float ringFillAmount = (relativeScoreAndImmediateRank.relativeScore * 100.0f) % 1;
+            float ringFillAmount = relativeScore % 1;
             progressRing.fillAmount = ringFillAmount;
             progressRing.SetVerticesDirty();
         }
@@ -427,28 +429,42 @@ namespace VisualScoreCounter
             return newImage;
         }
 
-        public void OnNoteCut(NoteData data, NoteCutInfo info)
+        private bool ShouldUpdate()
         {
-            if (Configuration.Instance.percentMode)
+            float RelativeScore = GetCurrentPercentage();
+            if (RelativeScore > 100.0f)
             {
+                return false;
+            }
+            return true;
+        } 
+
+        private void UpdateAll()
+        {
+            if (!ShouldUpdate()) {
+                // TODO: Handle updating on next frame?
+                return;
+            }
+            if (Configuration.Instance.percentMode) {
                 UpdatePercentModeText();
-            } else
-            {
+            } else {
                 UpdateClassicModeText();
             }
             UpdateRing();
         }
 
-        public void OnNoteMiss(NoteData data)
-        {
-            if (Configuration.Instance.percentMode)
-            {
-                UpdatePercentModeText();
-            } else
-            {
-                UpdateClassicModeText();
-            }
-            UpdateRing();
+        public void OnNoteCut(NoteData data, NoteCutInfo info) { }
+
+        public void OnNoteMiss(NoteData data) {
+            UpdateAll();
         }
+
+        public void ScoreUpdated(int modifiedScore)
+        {
+            UpdateAll();
+        }
+
+        public void MaxScoreUpdated(int maxModifiedScore) { }
+
     }
 }
