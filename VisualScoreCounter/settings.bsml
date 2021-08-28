@@ -13,7 +13,6 @@
 	<color-setting text="90% Color"  value="Color_90"  hover-hint="Color associated with 90%"  apply-on-change="true"></color-setting>
 	<color-setting text="89% Color"  value="Color_89"  hover-hint="Color associated with 89%"  apply-on-change="true"></color-setting>
 	<color-setting text="88% Color"  value="Color_88"  hover-hint="Color associated with 88%"  apply-on-change="true"></color-setting>
-	<color-setting text="88% Color"  value="Color_88"  hover-hint="Color associated with 88%"  apply-on-change="true"></color-setting>
 	<color-setting text="80% Color"  value="Color_80"  hover-hint="Color associated with 80%"  apply-on-change="true"></color-setting>
 	<color-setting text="65% Color"  value="Color_65"  hover-hint="Color associated with 65%"  apply-on-change="true"></color-setting>
 	<color-setting text="50% Color"  value="Color_50"  hover-hint="Color associated with 50%"  apply-on-change="true"></color-setting>
