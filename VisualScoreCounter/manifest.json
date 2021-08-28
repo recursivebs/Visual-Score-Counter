@@ -24,7 +24,7 @@
       "BSML": {
         "Resource": "VisualScoreCounter.settings.bsml",
         "Host": "VisualScoreCounter.SettingsHandler",
-        "Icon": "VisualScoreCounter.Images.icon.png"
+        "Icon": "VisualScoreCounter.Images.vsc-icon.png"
       }
     }
   }

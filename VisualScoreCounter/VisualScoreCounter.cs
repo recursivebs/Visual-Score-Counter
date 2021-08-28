@@ -17,7 +17,7 @@ namespace VisualScoreCounter
     internal class VisualScoreCounter : BasicCustomCounter, IScoreEventHandler
     {
 
-        [Inject] private RelativeScoreAndImmediateRankCounter relativeScoreAndImmediateRank;
+        [Inject] private readonly RelativeScoreAndImmediateRankCounter relativeScoreAndImmediateRank;
 
         // Ring vars
         private readonly string multiplierImageSpriteName = "Circle";
