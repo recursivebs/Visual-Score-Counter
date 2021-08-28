@@ -42,3 +42,5 @@ The following options are available for configuration:
 ## Known Issues
   
 See the Issues tab for all other minor issues that I wish I had fixes for!
+  
+Please contact me on discord with further questions: recursive#1618
