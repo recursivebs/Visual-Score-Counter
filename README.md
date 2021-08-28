@@ -9,7 +9,7 @@ Tired of checking your acc mid song and missing notes because of it? This **cust
 
 ## Warnings
 
-Use at your own risk. This counter hasn't been shown to be accurate in all circumstances, and probably won't play nicely with the Counters+ Score counter & base game counter elements.
+Use at your own risk. This counter hasn't been shown to be accurate in all circumstances - especially at the beginning of replays - and probably won't play nicely with the Counters+ Score counter & base game counter elements. Please contribute if you have a way to help out with currently open issues, as I have no idea what I'm doing and have no time to learn how to fix things the right way :)
 
 ## Installation
 
