@@ -9,17 +9,17 @@ namespace VisualScoreCounter
     {
         public static Configuration Instance { get; set; }
         public virtual bool percentageRingShowsNextRankColor { get; set; } = true;
-        public virtual Color Color_100 { get; set; } = new Color(1.0f, 69.0f/255.0f, 0.0f);
-        public virtual Color Color_99 { get; set; } = new Color(1.0f, 69.0f/255.0f, 0.0f);
-        public virtual Color Color_98 { get; set; } = new Color(1.0f, 166.0f / 255.0f, 0.0f);
-        public virtual Color Color_97 { get; set; } = new Color(1.0f, 77.0f / 255.0f, 0.0f);
-        public virtual Color Color_96 { get; set; } = new Color(227.0f / 255.0f, 18.0f / 255.0f, 113.0f / 255.0f);
-        public virtual Color Color_95 { get; set; } = new Color(245.0f / 255.0f, 10.0f / 255.0f, 227.0f / 255.0f);
-        public virtual Color Color_94 { get; set; } = new Color(162.0f / 255.0f, 13.0f / 255.0f, 242.0f / 255.0f);
-        public virtual Color Color_93 { get; set; } = new Color(11.0f / 255.0f, 34.0f / 255.0f, 244.0f / 255.0f);
-        public virtual Color Color_92 { get; set; } = new Color(0.0f, 198.0f/255.0f, 1.0f);
-        public virtual Color Color_91 { get; set; } = new Color(125.0f/255.0f, 245.0f/255.0f, 255.0f/255.0f);
-        public virtual Color Color_90 { get; set; } = new Color(183.0f/255.0f, 250.0f/255.0f, 255.0f/255.0f);
+        public virtual Color Color_100 { get; set; } = new Color(1.0f, 1.0f, 1.0f);
+        public virtual Color Color_99 { get; set; } = new Color(1.0f, 1.0f, 0.68846f);
+        public virtual Color Color_98 { get; set; } = new Color(0.1371948f, 0.9527207f, 0.250269f);
+        public virtual Color Color_97 { get; set; } = new Color(0.9107788f, 1.0f, 0.0f);
+        public virtual Color Color_96 { get; set; } = new Color(1.0f, 0.5137255f, 0.07058824f);
+        public virtual Color Color_95 { get; set; } = new Color(0.9706014f, 0.7994141f, 0.9706014f);
+        public virtual Color Color_94 { get; set; } = new Color(0.4726773f, 0.02532541f, 0.8719445f);
+        public virtual Color Color_93 { get; set; } = new Color(0.9054167f, 1.0f, 0.0f);
+        public virtual Color Color_92 { get; set; } = new Color(0.3497706f, 1.0f, 0.3794441f);
+        public virtual Color Color_91 { get; set; } = new Color(0.4745098f, 0.6597694f, 1.0f);
+        public virtual Color Color_90 { get; set; } = new Color(0.7176471f, 0.9803922f, 1.0f);
         public virtual Color Color_89 { get; set; } = Color.white;
         public virtual Color Color_88 { get; set; } = Color.white;
         public virtual Color Color_80 { get; set; } = Color.gray;
