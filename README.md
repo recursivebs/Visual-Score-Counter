@@ -13,7 +13,7 @@ Use at your own risk. This counter hasn't been shown to be accurate in all circu
 
 ## Installation
 
-1) Download the latest release here: <Release link here>
+1) Download the latest release here: https://github.com/bluecurse/Visual-Score-Counter/releases/tag/0.1.0
 2) Move **VisualScoreCounter.dll** into your **Plugins** folder.
 3) Launch the game.
 4) In **Player Options**, ensure that the **Advanced HUD** is set to OFF.
