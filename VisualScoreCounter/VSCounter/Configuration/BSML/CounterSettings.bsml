@@ -1,0 +1,29 @@
+﻿<vertical xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='https://monkeymanboy.github.io/BSML-Docs/ https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd' spacing='1' horizontal-fit='PreferredSize' vertical-fit='PreferredSize'>
+
+	<!-- Counter Settings -->
+
+	<checkbox-setting text='Percentage Ring shows the next % color' hover-hint='If enabled, the percentage ring will show the color of the next highest percent.' value='PercentageRingShowsNextColor' apply-on-change='true' />
+
+	<!-- Percentage Color Settings -->
+
+	<color-setting text='100%' hover-hint='Which color should represent 100%?' value='Color_100' apply-on-change='true' bind-value='true' />
+	<color-setting text='99%' hover-hint='Which color should represent 99%?' value='Color_99' apply-on-change='true' bind-value='true' />
+	<color-setting text='98%' hover-hint='Which color should represent 98%?' value='Color_98' apply-on-change='true' bind-value='true' />
+	<color-setting text='97%' hover-hint='Which color should represent 97%?' value='Color_97' apply-on-change='true' bind-value='true' />
+	<color-setting text='96%' hover-hint='Which color should represent 96%?' value='Color_96' apply-on-change='true' bind-value='true' />
+	<color-setting text='95%' hover-hint='Which color should represent 95%?' value='Color_95' apply-on-change='true' bind-value='true' />
+	<color-setting text='94%' hover-hint='Which color should represent 94%?' value='Color_94' apply-on-change='true' bind-value='true' />
+	<color-setting text='93%' hover-hint='Which color should represent 93%?' value='Color_93' apply-on-change='true' bind-value='true' />
+	<color-setting text='92%' hover-hint='Which color should represent 92%?' value='Color_92' apply-on-change='true' bind-value='true' />
+	<color-setting text='91%' hover-hint='Which color should represent 91%?' value='Color_91' apply-on-change='true' bind-value='true' />
+	<color-setting text='90%' hover-hint='Which color should represent 90%?' value='Color_90' apply-on-change='true' bind-value='true' />
+	<color-setting text='89%' hover-hint='Which color should represent 89%?' value='Color_89' apply-on-change='true' bind-value='true' />
+	<color-setting text='88%' hover-hint='Which color should represent 88%?' value='Color_88' apply-on-change='true' bind-value='true' />
+	<color-setting text='80%' hover-hint='Which color should represent 80%?' value='Color_80' apply-on-change='true' bind-value='true' />
+	<color-setting text='65%' hover-hint='Which color should represent 65%?' value='Color_65' apply-on-change='true' bind-value='true' />
+	<color-setting text='50%' hover-hint='Which color should represent 50%?' value='Color_50' apply-on-change='true' bind-value='true' />
+	<color-setting text='35%' hover-hint='Which color should represent 35%?' value='Color_35' apply-on-change='true' bind-value='true' />
+	<color-setting text='20%' hover-hint='Which color should represent 20%?' value='Color_20' apply-on-change='true' bind-value='true' />
+	<color-setting text='0%' hover-hint='Which color should represent 0%?' value='Color_0' apply-on-change='true' bind-value='true' />
+
+</vertical>
