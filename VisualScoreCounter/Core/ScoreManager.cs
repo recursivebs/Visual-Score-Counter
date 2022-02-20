@@ -181,14 +181,14 @@ namespace VisualScoreCounter.Core
 
         private void LogScoreChange()
         {
-            Plugin.Log.Debug("VisualScoreCounter : ScoreTotal: " + ScoreTotal + ", MaxScoreTotal: " + MaxScoreTotal + ", PercentageTotal: " + PercentageTotal);
+            //Plugin.Log.Debug("VisualScoreCounter : ScoreTotal: " + ScoreTotal + ", MaxScoreTotal: " + MaxScoreTotal + ", PercentageTotal: " + PercentageTotal);
         }
 
 
         internal void AddScore(ColorType colorType, int score, int comboMultiplier, int fcMultiplier)
         {
 
-            Plugin.Log.Debug("VisualScoreCounter : AddScore | score: " + score + ", comboMultiplier: " + comboMultiplier + ", fcMultiplier: " + fcMultiplier);
+            //Plugin.Log.Debug("VisualScoreCounter : AddScore | score: " + score + ", comboMultiplier: " + comboMultiplier + ", fcMultiplier: " + fcMultiplier);
 
             // Update score for left or right saber
             if (colorType == ColorType.ColorA) {
@@ -214,7 +214,7 @@ namespace VisualScoreCounter.Core
 
         internal void SubtractScore(ColorType colorType, int score, int comboMultiplier, int fcMultiplier, bool subtractFromMaxScore = false)
         {
-            Plugin.Log.Debug("VisualScoreCounter : SubtractScore | score: " + score + ", comboMultiplier: " + comboMultiplier + ", fcMultiplier: " + fcMultiplier);
+            //Plugin.Log.Debug("VisualScoreCounter : SubtractScore | score: " + score + ", comboMultiplier: " + comboMultiplier + ", fcMultiplier: " + fcMultiplier);
             // Update score for left or right saber
             if (colorType == ColorType.ColorA)
             {

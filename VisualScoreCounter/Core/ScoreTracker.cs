@@ -219,7 +219,7 @@ namespace VisualScoreCounter.Core
 				// Remove cut data since it won't be needed again.
 				swingCounterCutData.Remove(saberSwingRatingCounter);
 			} else {
-				//Plugin.Log.Error("ScoreTracker, HandleSaberSwingRatingCounterDidFinish : Failed to get cutData from swingCounterCutData!");
+				Plugin.Log.Error("ScoreTracker, HandleSaberSwingRatingCounterDidFinish : Failed to get cutData from swingCounterCutData!");
             }
 
 			// Unregister saber swing rating counter.
