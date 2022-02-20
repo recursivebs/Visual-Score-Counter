@@ -10,7 +10,7 @@ Tired of checking your acc mid song and missing notes because of it? Wish you co
 
 ## Installation
 
-1) Download the latest release here: https://github.com/bluecurse/Visual-Score-Counter/releases/tag/v1.0.0
+1) Download the latest release here: https://github.com/recursivebs/Visual-Score-Counter/releases/tag/v1.0.1
 2) Move **VisualScoreCounter.dll** into your **Plugins** folder.
 3) Launch the game.
 4) Open the **Counters+** mod settings.
