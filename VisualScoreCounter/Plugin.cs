@@ -38,7 +38,7 @@ namespace VisualScoreCounter
 			{
 				Container.BindInterfacesAndSelfTo<ScoreManager>().AsSingle();
 			});
-			zenjector.Install(Location.GameCore, (DiContainer Container) =>
+			zenjector.Install(Location.StandardPlayer, (DiContainer Container) =>
 			{
 				Container.BindInterfacesAndSelfTo<ScoreTracker>().AsSingle();
 			});

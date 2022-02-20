@@ -14,13 +14,9 @@ namespace VisualScoreCounter.Core
 
 		[InjectOptional] private GameplayCoreSceneSetupData sceneSetupData = null!;
 		[Inject] private PlayerDataModel playerDataModel = null!;
-		[Inject] private ComboUIController comboUIController = null!;
-		[Inject] private CoreGameHUDController _gameHUDController = null!;
 
 		private readonly ScoreController scoreController;
 		private readonly ScoreManager scoreManager;
-
-		[Inject] private readonly RelativeScoreAndImmediateRankCounter relativeScoreAndImmediateRank;
 
 		private Dictionary<ISaberSwingRatingCounter, CutData> swingCounterCutData;
 
@@ -39,26 +35,17 @@ namespace VisualScoreCounter.Core
 		private float lastBaseGameScoreUpdated;
 		private float lastBaseGameMaxScoreUpdated;
 
-		public int GetMultiplierForCombo(int c)
-        {
-
-			if (c > 13)
-            {
+		public int GetMultiplierForCombo(int c) {
+			if (c > 13) {
 				return 8;
             }
-
-			if (c > 5)
-            {
+			if (c > 5) {
 				return 4;
             }
-
-			if (c > 1)
-            {
+			if (c > 1) {
 				return 2;
             }
-
 			return 1;
-
         }
 
 		public ScoreTracker([InjectOptional] ScoreController scoreController, ScoreManager scoreManager)
@@ -226,8 +213,7 @@ namespace VisualScoreCounter.Core
 			saberSwingRatingCounter.UnregisterDidFinishReceiver(this);
 		}
 
-		private int DifferenceFromProvisionalScore(ISaberSwingRatingCounter saberSwingRatingCounter, float cutDistanceToCenter)
-		{
+		private int DifferenceFromProvisionalScore(ISaberSwingRatingCounter saberSwingRatingCounter, float cutDistanceToCenter) {
 			// note: Accuracy won't change over time, therefore it can be ignored in the calculation since it'll just cancel out.
 			ScoreModel.RawScoreWithoutMultiplier(saberSwingRatingCounter, cutDistanceToCenter, out int preCut, out int postCut, out _);
 

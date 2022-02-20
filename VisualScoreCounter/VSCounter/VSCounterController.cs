@@ -96,9 +96,9 @@ namespace VisualScoreCounter.VSCounter
         {
 
             percentMajorText = canvasUtility.CreateTextFromSettings(settings);
-            percentMajorText.fontSize = 7;
+            percentMajorText.fontSize = config.CounterFontSettings.WholeNumberFontSize;
             percentMinorText = canvasUtility.CreateTextFromSettings(settings);
-            percentMinorText.fontSize = 3;
+            percentMinorText.fontSize = config.CounterFontSettings.FractionalNumberFontSize;
 
             HUDCanvas currentSettings = canvasUtility.GetCanvasSettingsFromID(settings.CanvasID);
 
@@ -110,19 +110,19 @@ namespace VisualScoreCounter.VSCounter
                 ImageView backgroundImage = CreateRing(canvas);
                 backgroundImage.rectTransform.anchoredPosition = ringAnchoredPos;
                 backgroundImage.CrossFadeAlpha(0.05f, 1f, false);
-                backgroundImage.transform.localScale = ringSize / 10;
+                backgroundImage.transform.localScale = ComputeRingSize();
                 backgroundImage.type = Image.Type.Simple;
 
                 progressRing = CreateRing(canvas);
                 progressRing.rectTransform.anchoredPosition = ringAnchoredPos;
-                progressRing.transform.localScale = ringSize / 10;
+                progressRing.transform.localScale = ComputeRingSize();
 
             }
 
             UpdateCounter();
 
-            percentMajorText.rectTransform.anchoredPosition += new Vector2(0.0f, 0.7f);
-            percentMinorText.rectTransform.anchoredPosition += new Vector2(0.0f, -3.0f);
+            percentMajorText.rectTransform.anchoredPosition += new Vector2(config.CounterFontSettings.WholeNumberXOffset, config.CounterFontSettings.WholeNumberYOffset);
+            percentMinorText.rectTransform.anchoredPosition += new Vector2(config.CounterFontSettings.FractionalNumberXOffset, config.CounterFontSettings.FractionalNumberYOffset);
 
         }
 
@@ -206,6 +206,11 @@ namespace VisualScoreCounter.VSCounter
                 return 0;
             }
             return (int) ((scoreManager.PercentageTotal % 1) * 100);
+        }
+
+        private Vector3 ComputeRingSize()
+        {
+            return ((ringSize * config.RingScale) / 10.0f);
         }
 
         private Color GetColorForPercent(double Score)

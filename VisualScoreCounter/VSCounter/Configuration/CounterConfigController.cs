@@ -10,11 +10,60 @@ namespace VisualScoreCounter.VSCounter.Configuration
 	{
 		private CounterSettings settings => PluginConfig.Instance.CounterSettings;
 
+		[UIValue("ring-scale")]
+		public virtual float RingScale
+		{
+			get { return settings.RingScale; }
+			set { settings.RingScale = value; }
+		}
+
 		[UIValue("PercentageRingShowsNextColor")]
 		public virtual bool PercentageRingShowsNextColor
 		{
 			get { return settings.PercentageRingShowsNextColor; }
 			set { settings.PercentageRingShowsNextColor = value; }
+		}
+
+        [UIValue("whole-number-font-size")]
+		public virtual float WholeNumberFontSize
+		{
+			get { return settings.CounterFontSettings.WholeNumberFontSize; }
+			set { settings.CounterFontSettings.WholeNumberFontSize = value; }
+		}
+
+        [UIValue("whole-number-x-offset")]
+		public virtual float WholeNumberXOffset
+		{
+			get { return settings.CounterFontSettings.WholeNumberXOffset; }
+			set { settings.CounterFontSettings.WholeNumberXOffset = value; }
+		}
+
+        [UIValue("whole-number-y-offset")]
+		public virtual float WholeNumberYOffset
+		{
+			get { return settings.CounterFontSettings.WholeNumberYOffset; }
+			set { settings.CounterFontSettings.WholeNumberYOffset = value; }
+		}
+
+        [UIValue("fractional-number-font-size")]
+		public virtual float FractionalNumberFontSize
+		{
+			get { return settings.CounterFontSettings.FractionalNumberFontSize; }
+			set { settings.CounterFontSettings.FractionalNumberFontSize = value; }
+		}
+
+        [UIValue("fractional-number-x-offset")]
+		public virtual float FractionalNumberXOffset
+		{
+			get { return settings.CounterFontSettings.FractionalNumberXOffset; }
+			set { settings.CounterFontSettings.FractionalNumberXOffset = value; }
+		}
+
+        [UIValue("fractional-number-y-offset")]
+		public virtual float FractionalNumberYOffset
+		{
+			get { return settings.CounterFontSettings.FractionalNumberYOffset; }
+			set { settings.CounterFontSettings.FractionalNumberYOffset = value; }
 		}
 
 		// Percentage Color Settings
