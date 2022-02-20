@@ -7,9 +7,6 @@ Tired of checking your acc mid song and missing notes because of it? Wish you co
 ![example2](https://user-images.githubusercontent.com/84289648/131224151-d553783b-64bd-4cee-8acb-1e238d9a841b.gif)
 
 
-## Warnings
-
-Use at your own risk. This counter hasn't been shown to be accurate in all circumstances - especially at the beginning of replays - and probably won't play nicely with the Counters+ Score counter & base game counter elements. Please contribute if you have a way to help out with currently open issues, as I have no idea what I'm doing and have no time to learn how to fix things the right way :)
 
 ## Installation
 
