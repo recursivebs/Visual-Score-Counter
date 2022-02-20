@@ -38,7 +38,6 @@ namespace VisualScoreCounter.Core
 
 		private float lastBaseGameScoreUpdated;
 		private float lastBaseGameMaxScoreUpdated;
-		private bool bIsInReplay;
 
 		public int GetMultiplierForCombo(int c)
         {
@@ -91,8 +90,6 @@ namespace VisualScoreCounter.Core
 			// TODO: Move this into a setting?
 			GetMultiplier = MultiplierAtNoteCount;
 
-			bIsInReplay = ScoresaberUtil.IsInReplay();
-
 			// Assign events
 			if (scoreController != null) {
 				scoreController.noteWasMissedEvent += ScoreController_noteWasMissedEvent;
@@ -104,7 +101,6 @@ namespace VisualScoreCounter.Core
 		}
 
 		private void WallCollisionDetector_wallCollisionEvent() {
-			Plugin.Log.Debug("VisualScoreCounter: Player hit a wall - breaking combo!");
 			OnBreakCombo();
 		}
 
@@ -222,10 +218,8 @@ namespace VisualScoreCounter.Core
 
 				// Remove cut data since it won't be needed again.
 				swingCounterCutData.Remove(saberSwingRatingCounter);
-			}
-			else
-            {
-				Plugin.Log.Error("ScoreTracker, HandleSaberSwingRatingCounterDidFinish : Failed to get cutData from swingCounterCutData!");
+			} else {
+				//Plugin.Log.Error("ScoreTracker, HandleSaberSwingRatingCounterDidFinish : Failed to get cutData from swingCounterCutData!");
             }
 
 			// Unregister saber swing rating counter.
@@ -249,11 +243,7 @@ namespace VisualScoreCounter.Core
 
         public void ScoreUpdated(int modifiedScore) {
 			lastBaseGameScoreUpdated = modifiedScore;
-			if (bIsInReplay)
-            {
-				Plugin.Log.Debug("In a replay");
-            }
-			if (IsAtEndOfSong() || (bIsInReplay && IsScoreTooDifferent(modifiedScore))) {
+			if (IsAtEndOfSong() || (ScoresaberUtil.IsInReplay() && IsScoreTooDifferent(modifiedScore))) {
                 scoreManager.syncScore((int) lastBaseGameScoreUpdated, (int) lastBaseGameMaxScoreUpdated);
             }
         }
