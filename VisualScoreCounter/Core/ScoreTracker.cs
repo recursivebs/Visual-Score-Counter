@@ -4,6 +4,7 @@ using Zenject;
 using VisualScoreCounter.VSCounter.Configuration;
 using CountersPlus.Counters.Interfaces;
 using TMPro;
+using VisualScoreCounter.Utils;
 
 namespace VisualScoreCounter.Core
 {
@@ -37,7 +38,7 @@ namespace VisualScoreCounter.Core
 
 		private float lastBaseGameScoreUpdated;
 		private float lastBaseGameMaxScoreUpdated;
-		private bool bHasSyncedOnce;
+		private bool bIsInReplay;
 
 		public int GetMultiplierForCombo(int c)
         {
@@ -74,13 +75,11 @@ namespace VisualScoreCounter.Core
 			GetMultiplier = x => 1;
 			lastBaseGameScoreUpdated = 0;
 			lastBaseGameMaxScoreUpdated = 0;
-			bHasSyncedOnce = false;
 
-			//badCutThreshold = PluginConfig.Instance.BadCutThreshold;
 		}
 
-		public void Initialize()
-		{
+		public void Initialize() {
+
 			// Do not initialize if either of these are null
 			if (playerDataModel == null || sceneSetupData == null)
 				return;
@@ -88,14 +87,14 @@ namespace VisualScoreCounter.Core
 			// Reset ScoreManager at level start
 			scoreManager.ResetScoreManager(sceneSetupData.difficultyBeatmap, playerDataModel, sceneSetupData.colorScheme);
 
-
 			// Set function for multiplier.
 			// TODO: Move this into a setting?
 			GetMultiplier = MultiplierAtNoteCount;
 
+			bIsInReplay = ScoresaberUtil.IsInReplay();
+
 			// Assign events
-			if (scoreController != null)
-			{
+			if (scoreController != null) {
 				scoreController.noteWasMissedEvent += ScoreController_noteWasMissedEvent;
 				scoreController.noteWasCutEvent += ScoreController_noteWasCutEvent;
 			}
@@ -113,8 +112,7 @@ namespace VisualScoreCounter.Core
 		public void Dispose()
 		{
 			// Unassign events
-			if (scoreController != null)
-			{
+			if (scoreController != null) {
 				scoreController.noteWasMissedEvent -= ScoreController_noteWasMissedEvent;
 				scoreController.noteWasCutEvent -= ScoreController_noteWasCutEvent;
 			}
@@ -160,30 +158,24 @@ namespace VisualScoreCounter.Core
 
 		private void OnMiss(NoteData noteData)
         {
-			/*
 			int mult = liveMultiplier;
 			int fcMult = GetMultiplier(noteCount);
-			Plugin.Log.Debug("VisualScoreCounter: Note was missed! NoteCount: " + noteCount + ", Combo: " + combo + ", mult: " + mult + ", fcMult: " + fcMult);
 			OnBreakCombo();
             scoreManager.AddScore(noteData.colorType, 0, 1, fcMult);
-			*/
         }
 
 		private void ScoreController_noteWasMissedEvent(NoteData noteData, int _)
 		{
-			/*
 			if (noteData.colorType == ColorType.None) {
 				return;
             }
 
 			noteCount++;
 			OnMiss(noteData);
-			*/
 		}
 
 		private void ScoreController_noteWasCutEvent(NoteData noteData, in NoteCutInfo noteCutInfo, int _)
 		{
-			/*
 			// Ignore bombs
 			if (noteData.colorType == ColorType.None) {
 				// We hit a bomb!
@@ -214,13 +206,11 @@ namespace VisualScoreCounter.Core
 				scoreManager.AddScore(noteData.colorType, MaxScoreIfFinished(acc), liveMultiplier, GetMultiplier(noteCount));
 
 			}
-			*/
 
 		}
 
 		public void HandleSaberSwingRatingCounterDidFinish(ISaberSwingRatingCounter saberSwingRatingCounter)
 		{
-			/*
 			if (swingCounterCutData.TryGetValue(saberSwingRatingCounter, out CutData cutData)) {
 				// Calculate difference between previously applied score and actual score
 				int diffAngleCutScore = DifferenceFromProvisionalScore(saberSwingRatingCounter, cutData.cutDistanceToCenter);
@@ -240,13 +230,10 @@ namespace VisualScoreCounter.Core
 
 			// Unregister saber swing rating counter.
 			saberSwingRatingCounter.UnregisterDidFinishReceiver(this);
-			*/
 		}
 
 		private int DifferenceFromProvisionalScore(ISaberSwingRatingCounter saberSwingRatingCounter, float cutDistanceToCenter)
 		{
-			return -1;
-			/*
 			// note: Accuracy won't change over time, therefore it can be ignored in the calculation since it'll just cancel out.
 			ScoreModel.RawScoreWithoutMultiplier(saberSwingRatingCounter, cutDistanceToCenter, out int preCut, out int postCut, out _);
 
@@ -254,39 +241,30 @@ namespace VisualScoreCounter.Core
 			int ratingAngleCutScore = preCut + postCut;
 
 			return maxAngleCutScore - ratingAngleCutScore;
-			*/
 		}
+
+		public bool IsAtEndOfSong() {
+			return (int)lastBaseGameMaxScoreUpdated == scoreManager.MaxScoreAtLevelStart;
+        }
 
         public void ScoreUpdated(int modifiedScore) {
 			lastBaseGameScoreUpdated = modifiedScore;
-            scoreManager.syncScore((int) lastBaseGameScoreUpdated, (int) lastBaseGameMaxScoreUpdated);
+			if (bIsInReplay)
+            {
+				Plugin.Log.Debug("In a replay");
+            }
+			if (IsAtEndOfSong() || (bIsInReplay && IsScoreTooDifferent(modifiedScore))) {
+                scoreManager.syncScore((int) lastBaseGameScoreUpdated, (int) lastBaseGameMaxScoreUpdated);
+            }
         }
 
         public void MaxScoreUpdated(int maxModifiedScore) {
 			lastBaseGameMaxScoreUpdated = maxModifiedScore;
-            //scoreManager.syncScore((int) lastBaseGameScoreUpdated, (int) lastBaseGameMaxScoreUpdated);
-			/*
-			if (bHasSyncedOnce && ((int)lastBaseGameMaxScoreUpdated == scoreManager.MaxScoreAtLevelStart)) {
-				int newScore = GetCurrentBaseGameScore();
-                Plugin.Log.Debug("End of the song! Syncing scores - pre-sync: " + scoreManager.ScoreTotal + ", post-sync: " + newScore);
+			if (IsAtEndOfSong()) {
 				scoreManager.syncScore((int) lastBaseGameScoreUpdated, (int) lastBaseGameMaxScoreUpdated);
             }
-			*/
         }
 
-		private float GetCurrentBaseGamePercentage() {
-			float relativeScore = relativeScoreAndImmediateRank.relativeScore * 100;
-			if (relativeScore <= 0) {
-				relativeScore = 100.0f;
-			}
-			return relativeScore;
-		}
-
-		private int GetCurrentBaseGameScore() {
-			float total = (GetCurrentBaseGamePercentage() / 100) * scoreManager.MaxScoreTotal;
-            int newScore = Convert.ToInt32(total);
-			return newScore;
-		}
 
 		private bool IsScoreTooDifferent(int scoreUpdatedModifiedScore) {
             int scoreDiff = Convert.ToInt32(Math.Abs(scoreUpdatedModifiedScore - scoreManager.ScoreTotal));
@@ -295,7 +273,6 @@ namespace VisualScoreCounter.Core
             }
 			return false;
         }
-
 
 
         private struct CutData

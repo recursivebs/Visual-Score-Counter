@@ -130,6 +130,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\ScoreControllerWallCollisionDetectionPatch.cs" />
+    <Compile Include="Utils\ScoresaberUtil.cs" />
     <Compile Include="VSCounter\Configuration\CounterConfigController.cs" />
     <Compile Include="VSCounter\Configuration\Settings\PercentageColorSettings.cs" />
     <Compile Include="VSCounter\VSCounterController.cs" />
