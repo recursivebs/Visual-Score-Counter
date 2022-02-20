@@ -10,19 +10,21 @@ Tired of checking your acc mid song and missing notes because of it? Wish you co
 
 ## Installation
 
-1) Download the latest release here: https://github.com/bluecurse/Visual-Score-Counter/releases/tag/0.1.0
+1) Download the latest release here: https://github.com/bluecurse/Visual-Score-Counter/releases/tag/v1.0.0
 2) Move **VisualScoreCounter.dll** into your **Plugins** folder.
 3) Launch the game.
-4) In **Player Options**, ensure that the **Advanced HUD** is set to OFF.
-5) Open the **Counters+** mod settings.
-6) Ensure that the default **Score** counter is disabled. As of now, the default **Score** counter and the **Visual Score** counter aren't compatible.
-7) In the **Counters** section, find the icon for **Visual Score Counter** to open it's settings:
-  
+4) Open the **Counters+** mod settings.
+5) Ensure that the default **Score** counter is disabled.
+6) In the **Counters** section, find the icon for **Visual Score Counter** to open it's settings:
+
+
 ![image](https://user-images.githubusercontent.com/84289648/131233224-9544690b-bd1c-4553-bd57-3ecdef0ed0bd.png)
  
 For the record, I use a layout like this:
   
 ![image](https://user-images.githubusercontent.com/84289648/131233218-7a0b8c6d-a1c6-414c-ba46-cb23e4bd26bb.png)
+
+Make sure to also set the **Advanced HUD** to OFF in the player settings.
 
 ## Configuration
   
