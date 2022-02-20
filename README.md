@@ -1,5 +1,7 @@
 # Visual Score Counter
 
+![VisualScoreCounter](https://user-images.githubusercontent.com/21104295/154864625-ea622845-ca81-4ef4-b1e5-2e39ea55534c.gif)
+
 Tired of checking your acc mid song and missing notes because of it? Wish you could see how certain sections of a map affect your acc in real time? This **custom Counters+ counter** tries to fix all of that by providing you with a visual and colorful representation of the score; easily visible in your peripheral vision as you're playing a song!
 
 ![image](https://user-images.githubusercontent.com/84289648/131223567-d1d589df-71ec-4b77-8cec-fbcc4b0469cd.png)
