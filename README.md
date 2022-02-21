@@ -7,8 +7,7 @@ Tired of checking your acc mid song and missing notes because of it? Wish you co
 
 ![example2](https://user-images.githubusercontent.com/84289648/131224151-d553783b-64bd-4cee-8acb-1e238d9a841b.gif)
 
-
-
+YouTube example: https://youtu.be/M_KphavDJSo?t=28
 
 ## Installation
 
