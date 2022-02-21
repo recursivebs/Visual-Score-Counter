@@ -11,12 +11,29 @@ namespace VisualScoreCounter.VSCounter.Configuration {
 
     public class CounterFontSettings {
 
-        public virtual float WholeNumberFontSize { get; set; } = 7.0f;
-        public virtual float WholeNumberXOffset { get; set; } = 0.0f;
-        public virtual float WholeNumberYOffset { get; set; } = 0.7f;
-        public virtual float FractionalNumberFontSize { get; set; } = 3.5f;
-        public virtual float FractionalNumberXOffset { get; set; } = 0.0f;
-        public virtual float FractionalNumberYOffset { get; set; } = -3.0f;
+        public virtual float WholeNumberFontSize { get; set; } = Default_WholeNumberFontSize;
+        public virtual float WholeNumberXOffset { get; set; } = Default_WholeNumberXOffset;
+        public virtual float WholeNumberYOffset { get; set; } = Default_WholeNumberYOffset;
+        public virtual float FractionalNumberFontSize { get; set; } = Default_FractionalNumberFontSize;
+        public virtual float FractionalNumberXOffset { get; set; } = Default_FractionalNumberXOffset;
+        public virtual float FractionalNumberYOffset { get; set; } = Default_FractionalNumberXOffset;
+
+        public void Reset() {
+            WholeNumberFontSize = Default_WholeNumberFontSize;
+            WholeNumberXOffset = Default_WholeNumberXOffset;
+            WholeNumberYOffset = Default_WholeNumberYOffset;
+            FractionalNumberFontSize = Default_FractionalNumberFontSize;
+            FractionalNumberXOffset = Default_FractionalNumberXOffset;
+            FractionalNumberYOffset = Default_FractionalNumberYOffset;
+        }
+
+        // Defaults
+        public static float Default_WholeNumberFontSize = 7.0f;
+        public static float Default_WholeNumberXOffset = 0.0f;
+        public static float Default_WholeNumberYOffset = 0.7f;
+        public static float Default_FractionalNumberFontSize = 3.5f;
+        public static float Default_FractionalNumberXOffset = 0.0f;
+        public static float Default_FractionalNumberYOffset = -3.0f;
 
     }
 
