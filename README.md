@@ -31,17 +31,33 @@ Make sure to also set the **Advanced HUD** to OFF in the player settings.
 ## Configuration
   
 The following options are available for configuration:
+
+#### General Config
   
 **% Ring Shows Next Rank Color**: If enabled, the ring around the accuracy numbers will display the color of the *next* rank - for example, a score of 95.60% will cause the ring to display with the color configured for 96%. All example screenshots/gifs use this setting. Defaulted to ON.
+
+**Ring Scale**: Adjusts the ring size by a multiple. Defaulted to 1.
+
+**Hide Base Game Rank Display**: Hides the base game's rank (SS/S/A/B/C/D) and percentage counter, enabled by Advanced HUD being on. Defaulted to ON.
+
+#### Color Config
 
 **100% Color**: Self-explanatory. Color to render for an accuracy of 100%.
   
 **99% Color**:  Self-explanatory. Color to render for an accuracy of 99%.
   
 ... and on and on, until 0% :)
+
+#### Font Config
+
+**Whole Number Font Size**: Size of the font used for displaying the whole number part of the accuracy percentage. Defaulted to 7.
+**Whole Number X Offset**: Moves the whole number of the accuracy percentage left/right. Defaulted to 0.
+**Whole Number Y Offset**: Moves the whole number of the accuracy percentage up/down. Defaulted to 0.7.
+
+**Fractional Number Font Size**: Size of the font used for displaying the fractional number part of the accuracy percentage. Defaulted to 3.5.
+**Fractional Number X Offset**: Moves the fractional number of the accuracy percentage left/right. Defaulted to 0.
+**Fractional Number Y Offset**: Moves the fractional number of the accuracy percentage up/down. Defaulted to -3.0.
   
 ## Known Issues
   
-See the Issues tab for all other minor issues that I wish I had fixes for!
-  
-Please contact me on discord with further questions: recursive#1618
+See the Issues tab for all known issues. If you're having trouble with the mod, feel free to reach out on discord at: recursive#1618
