@@ -108,7 +108,8 @@ namespace VisualScoreCounter.VSCounter
             var canvas = canvasUtility.GetCanvasFromID(settings.CanvasID);
             if (canvas != null)
             {
-                Vector2 ringAnchoredPos = canvasUtility.GetAnchoredPositionFromConfig(settings) * currentSettings.PositionScale;
+                Vector2 ringAnchoredPos = (canvasUtility.GetAnchoredPositionFromConfig(settings) * currentSettings.PositionScale);
+                ringAnchoredPos = ringAnchoredPos + GetCounterOffset();
 
                 ImageView backgroundImage = CreateRing(canvas);
                 backgroundImage.rectTransform.anchoredPosition = ringAnchoredPos;
@@ -134,11 +135,11 @@ namespace VisualScoreCounter.VSCounter
 
             UpdateCounter();
 
-            percentMajorText.rectTransform.anchoredPosition += new Vector2(config.CounterFontSettings.WholeNumberXOffset, config.CounterFontSettings.WholeNumberYOffset);
-            percentMinorText.rectTransform.anchoredPosition += new Vector2(config.CounterFontSettings.FractionalNumberXOffset, config.CounterFontSettings.FractionalNumberYOffset);
-
+            percentMajorText.rectTransform.anchoredPosition += new Vector2(config.CounterFontSettings.WholeNumberXOffset + config.CounterXOffset, config.CounterFontSettings.WholeNumberYOffset + config.CounterYOffset);
+            percentMinorText.rectTransform.anchoredPosition += new Vector2(config.CounterFontSettings.FractionalNumberXOffset + config.CounterXOffset, config.CounterFontSettings.FractionalNumberYOffset + config.CounterYOffset);
 
         }
+
 
         private ImageView CreateRing(Canvas canvas)
         {
@@ -201,8 +202,7 @@ namespace VisualScoreCounter.VSCounter
             percentMinorText.color = percentMinorColor;
         }
 
-        private int GetCurrentMajorPercent()
-        {
+        private int GetCurrentMajorPercent() {
             if (scoreManager == null)
             {
                 Plugin.Log.Error("VisualScoreCounter : VSCounterController has a null reference to scoreManager - cannot get major percent!");
@@ -212,8 +212,7 @@ namespace VisualScoreCounter.VSCounter
             return (int) Math.Floor(scoreManager.PercentageTotal);
         }
 
-        private int GetCurrentMinorPercent()
-        {
+        private int GetCurrentMinorPercent() {
             if (scoreManager == null)
             {
                 Plugin.Log.Error("VisualScoreCounter : VSCounterController has a null reference to scoreManager - cannot get minor percent!");
@@ -222,9 +221,12 @@ namespace VisualScoreCounter.VSCounter
             return (int) ((scoreManager.PercentageTotal % 1) * 100);
         }
 
-        private Vector3 ComputeRingSize()
-        {
+        private Vector3 ComputeRingSize() {
             return ((ringSize * config.RingScale) / 10.0f);
+        }
+
+        private Vector2 GetCounterOffset() {
+            return new Vector2(config.CounterXOffset, config.CounterYOffset);
         }
 
         private Color GetColorForPercent(double Score)

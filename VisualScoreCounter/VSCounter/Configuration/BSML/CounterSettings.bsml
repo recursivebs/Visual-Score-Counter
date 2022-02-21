@@ -8,6 +8,8 @@
 	<checkbox-setting text='Hide Base Game Rank Display' hover-hint='If enabled, the base game rank display will be hidden.' value='HideBaseGameRankDisplay' apply-on-change='true' />
 	<checkbox-setting text='Percentage Ring shows the next % color' hover-hint='If enabled, the percentage ring will show the color of the next highest percent.' value='PercentageRingShowsNextColor' apply-on-change='true' />
 	<slider-setting text='Ring Scale' min='0' max='10' increment='0.1' value='ring-scale' show-buttons='true' apply-on-change='true' />
+	<slider-setting text='Counter X Offset' hover-hint='Pushes the entire counter around horizontally.' min='-20' max='20' increment='0.1' value='counter-x-offset' show-buttons='true' apply-on-change='true' />
+	<slider-setting text='Counter Y Offset' hover-hint='Pushes the entire counter around vertically.' min='-20' max='20' increment='0.1' value='counter-y-offset' show-buttons='true' apply-on-change='true' />
 
 	<!-- Percentage Color Settings -->
 	<vertical>

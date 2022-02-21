@@ -10,6 +10,20 @@ namespace VisualScoreCounter.VSCounter.Configuration
 	{
 		private CounterSettings settings => PluginConfig.Instance.CounterSettings;
 
+		[UIValue("counter-x-offset")]
+		public virtual float CounterXOffset
+		{
+			get { return settings.CounterXOffset; }
+			set { settings.CounterXOffset = value; }
+		}
+
+		[UIValue("counter-y-offset")]
+		public virtual float CounterYOffset
+		{
+			get { return settings.CounterYOffset; }
+			set { settings.CounterYOffset = value; }
+		}
+
 		[UIValue("HideBaseGameRankDisplay")]
 		public virtual bool HideBaseGameRankDisplay
 		{
