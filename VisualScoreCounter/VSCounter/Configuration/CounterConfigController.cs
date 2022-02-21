@@ -10,6 +10,13 @@ namespace VisualScoreCounter.VSCounter.Configuration
 	{
 		private CounterSettings settings => PluginConfig.Instance.CounterSettings;
 
+		[UIValue("HideBaseGameRankDisplay")]
+		public virtual bool HideBaseGameRankDisplay
+		{
+			get { return settings.HideBaseGameRankDisplay; }
+			set { settings.HideBaseGameRankDisplay = value; }
+		}
+
 		[UIValue("ring-scale")]
 		public virtual float RingScale
 		{

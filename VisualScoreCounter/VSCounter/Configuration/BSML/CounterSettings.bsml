@@ -1,7 +1,11 @@
 ﻿<vertical xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='https://monkeymanboy.github.io/BSML-Docs/ https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd' spacing='1' horizontal-fit='PreferredSize' vertical-fit='PreferredSize'>
 
 	<!-- Counter Settings -->
+	<horizontal>
+		<text text='Counter Settings' horizontal-fit='PreferredSize' pad='6'></text>
+	</horizontal>
 
+	<checkbox-setting text='Hide Base Game Rank Display' hover-hint='If enabled, the base game rank display will be hidden.' value='HideBaseGameRankDisplay' apply-on-change='true' />
 	<checkbox-setting text='Percentage Ring shows the next % color' hover-hint='If enabled, the percentage ring will show the color of the next highest percent.' value='PercentageRingShowsNextColor' apply-on-change='true' />
 	<slider-setting text='Ring Scale' min='0' max='10' increment='0.1' value='ring-scale' show-buttons='true' apply-on-change='true' />
 
@@ -9,7 +13,7 @@
 	<vertical>
 
 		<horizontal>
-			<text text='Color Settings' horizontal-fit='PreferredSize'></text>
+			<text text='Color Settings' horizontal-fit='PreferredSize' pad='6'></text>
 		</horizontal>
 
 		<color-setting text='100%' hover-hint='Which color should represent 100%?' value='Color_100' apply-on-change='true' bind-value='true' />
@@ -37,7 +41,7 @@
 	<!-- Counter Font Settings -->
 	<vertical>
 		<horizontal>
-			<text text='Font Settings' horizontal-fit='PreferredSize'></text>
+			<text text='Font Settings' horizontal-fit='PreferredSize' pad='6'></text>
 		</horizontal>
 
 		<slider-setting text='Whole Number Font Size' min='1' max='10' increment='0.1' value='whole-number-font-size' show-buttons='true' apply-on-change='true' />

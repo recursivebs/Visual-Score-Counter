@@ -13,8 +13,10 @@ using CountersPlus.Custom;
 using CountersPlus.Utils;
 using HMUI;
 using CountersPlus.ConfigModels;
+using IPA.Utilities;
 using UnityEngine.UI;
 using BeatSaberMarkupLanguage;
+using Zenject;
 
 namespace VisualScoreCounter.VSCounter
 {
@@ -24,6 +26,7 @@ namespace VisualScoreCounter.VSCounter
         private readonly ScoreManager scoreManager;
         private readonly CanvasUtility canvasUtility;
         private readonly CustomConfigModel settings;
+        [Inject] private CoreGameHUDController coreGameHUD;
 
         // Ring vars
         private readonly string multiplierImageSpriteName = "Circle";
@@ -119,10 +122,21 @@ namespace VisualScoreCounter.VSCounter
 
             }
 
+            if (config.HideBaseGameRankDisplay) {
+
+                GameObject baseGameRank = FieldAccessor<CoreGameHUDController, GameObject>.GetAccessor("_immediateRankGO")(ref coreGameHUD);
+                UnityEngine.Object.Destroy(baseGameRank.gameObject);
+
+                GameObject baseGameScore = FieldAccessor<CoreGameHUDController, GameObject>.GetAccessor("_relativeScoreGO")(ref coreGameHUD);
+                UnityEngine.Object.Destroy(baseGameScore.gameObject);
+
+            }
+
             UpdateCounter();
 
             percentMajorText.rectTransform.anchoredPosition += new Vector2(config.CounterFontSettings.WholeNumberXOffset, config.CounterFontSettings.WholeNumberYOffset);
             percentMinorText.rectTransform.anchoredPosition += new Vector2(config.CounterFontSettings.FractionalNumberXOffset, config.CounterFontSettings.FractionalNumberYOffset);
+
 
         }
 

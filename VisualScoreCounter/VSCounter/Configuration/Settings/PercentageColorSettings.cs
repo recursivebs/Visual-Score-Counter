@@ -30,24 +30,24 @@ namespace VisualScoreCounter.VSCounter.Configuration {
 		public virtual Color Color_0 { get; set; } = DefaultColor_0;
 
         public static Color DefaultColor_100 = new Color(1.0f, 1.0f, 1.0f);
-        public static Color DefaultColor_99 = new Color(1.0f, 1.0f, 0.68846f);
-        public static Color DefaultColor_98 = new Color(0.1371948f, 0.9527207f, 0.250269f);
-        public static Color DefaultColor_97 = new Color(0.9107788f, 1.0f, 0.0f);
-        public static Color DefaultColor_96 = new Color(1.0f, 0.5137255f, 0.07058824f);
-        public static Color DefaultColor_95 = new Color(0.9706014f, 0.7994141f, 0.9706014f);
-        public static Color DefaultColor_94 = new Color(0.4726773f, 0.02532541f, 0.8719445f);
-        public static Color DefaultColor_93 = new Color(0.9054167f, 1.0f, 0.0f);
-        public static Color DefaultColor_92 = new Color(0.3497706f, 1.0f, 0.3794441f);
-        public static Color DefaultColor_91 = new Color(0.4745098f, 0.6597694f, 1.0f);
-        public static Color DefaultColor_90 = new Color(0.7176471f, 0.9803922f, 1.0f);
-        public static Color DefaultColor_89 = Color.white;
-        public static Color DefaultColor_88 = Color.white;
-        public static Color DefaultColor_80 = Color.gray;
-        public static Color DefaultColor_65 = Color.green;
-        public static Color DefaultColor_50 = Color.yellow;
+        public static Color DefaultColor_99 = new Color(0.854902f, 0.7137255f, 1.0f);
+        public static Color DefaultColor_98 = new Color(0.6784314f, 0.3568628f, 1.0f);
+        public static Color DefaultColor_97 = new Color(0.4980392f, 0.0f, 1.0f);
+        public static Color DefaultColor_96 = new Color(0.3568628f, 0.2862745f, 1.0f);
+        public static Color DefaultColor_95 = new Color(0.1764706f, 0.6431373f, 1.0f);
+        public static Color DefaultColor_94 = new Color(0.0f, 1.0f, 1.0f);
+        public static Color DefaultColor_93 = new Color(0.0f, 1.0f, 0.7137255f);
+        public static Color DefaultColor_92 = new Color(0.0f, 1.0f, 0.3568628f);
+        public static Color DefaultColor_91 = new Color(0.0f, 1.0f, 0.0f);
+        public static Color DefaultColor_90 = new Color(0.2862745f, 1.0f, 0.0f);
+        public static Color DefaultColor_89 = new Color(0.6431373f, 1.0f, 0.0f);
+        public static Color DefaultColor_88 = new Color(1.0f, 1.0f, 0.0f);
+        public static Color DefaultColor_80 = new Color(1.0f, 0.8627451f, 0.0f);
+        public static Color DefaultColor_65 = new Color(1.0f, 0.6901961f, 0.0f);
+        public static Color DefaultColor_50 = new Color(1.0f, 0.9215686f, 0.01568628f);
         public static Color DefaultColor_35 = new Color(1.0f, 0.5f, 0.0f);
-        public static Color DefaultColor_20 = Color.red;
-        public static Color DefaultColor_0 = Color.red;
+        public static Color DefaultColor_20 = new Color(1.0f, 0.0f, 0.0f);
+        public static Color DefaultColor_0 = new Color(1.0f, 0.0f, 0.0f);
 
 	}
 }
