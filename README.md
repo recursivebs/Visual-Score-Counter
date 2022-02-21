@@ -4,15 +4,15 @@
 
 Tired of checking your acc mid song and missing notes because of it? Wish you could see how certain sections of a map affect your acc in real time? This **custom Counters+ counter** tries to fix all of that by providing you with a visual and colorful representation of the score; easily visible in your peripheral vision as you're playing a song!
 
-![image](https://user-images.githubusercontent.com/84289648/131223567-d1d589df-71ec-4b77-8cec-fbcc4b0469cd.png)
 
 ![example2](https://user-images.githubusercontent.com/84289648/131224151-d553783b-64bd-4cee-8acb-1e238d9a841b.gif)
 
 
 
+
 ## Installation
 
-1) Download the latest release here: https://github.com/recursivebs/Visual-Score-Counter/releases/tag/v1.0.1
+1) Download the latest release here: https://github.com/recursivebs/Visual-Score-Counter/releases/tag/v1.0.4
 2) Move **VisualScoreCounter.dll** into your **Plugins** folder.
 3) Launch the game.
 4) Open the **Counters+** mod settings.
