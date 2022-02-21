@@ -16,17 +16,14 @@ Tired of checking your acc mid song and missing notes because of it? Wish you co
 2) Move **VisualScoreCounter.dll** into your **Plugins** folder.
 3) Launch the game.
 4) Open the **Counters+** mod settings.
-5) Ensure that the default **Score** counter is disabled.
+5) Ensure that the default **Score** counter is disabled (otherwise you'll have two score counters enabled)
 6) In the **Counters** section, find the icon for **Visual Score Counter** to open it's settings:
-
 
 ![image](https://user-images.githubusercontent.com/84289648/131233224-9544690b-bd1c-4553-bd57-3ecdef0ed0bd.png)
  
-For the record, I use a layout like this:
+For example, I use a layout like this:
   
 ![image](https://user-images.githubusercontent.com/84289648/131233218-7a0b8c6d-a1c6-414c-ba46-cb23e4bd26bb.png)
-
-Make sure to also set the **Advanced HUD** to OFF in the player settings.
 
 ## Configuration
   
