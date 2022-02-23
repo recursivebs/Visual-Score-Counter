@@ -6,11 +6,11 @@
 			<text text='Counter Settings' horizontal-fit='PreferredSize'></text>
 		</horizontal>
 
-		<checkbox-setting text='Hide Base Game Score/Rank Display' hover-hint='If enabled, the base game score/rank display will be hidden. This will NOT hide points.' value='HideBaseGameRankDisplay' apply-on-change='true' bind-value='true'/>
-		<checkbox-setting text='Percentage Ring shows the next % color' hover-hint='If enabled, the percentage ring (and fractional number of acc) will show the color of the next highest percent.' value='PercentageRingShowsNextColor' apply-on-change='true' bind-value='true'/>
 		<slider-setting text='Ring Scale' hover-hint='Scales the ring up/down. Set to 0 to make the ring disappear.' min='0' max='10' increment='0.1' value='ring-scale' show-buttons='true' apply-on-change='true' bind-value='true'/>
 		<slider-setting text='Counter X Offset' hover-hint='Pushes the entire counter around horizontally.' min='-20' max='20' increment='0.1' value='counter-x-offset' show-buttons='true' apply-on-change='true' bind-value='true'/>
 		<slider-setting text='Counter Y Offset' hover-hint='Pushes the entire counter around vertically.' min='-20' max='20' increment='0.1' value='counter-y-offset' show-buttons='true' apply-on-change='true' bind-value='true'/>
+		<checkbox-setting text='Hide Base Game Score/Rank Display' hover-hint='If enabled, the base game score/rank display will be hidden. This will NOT hide points.' value='HideBaseGameRankDisplay' apply-on-change='true' bind-value='true'/>
+		<checkbox-setting text='Percentage Ring shows the next % color' hover-hint='If enabled, the percentage ring (and fractional number of acc) will show the color of the next highest percent.' value='PercentageRingShowsNextColor' apply-on-change='true' bind-value='true'/>
 		<horizontal>
 			<button text='Reset' hover-hint='Resets settings to default' click-event='reset-settings' />
 		</horizontal>
