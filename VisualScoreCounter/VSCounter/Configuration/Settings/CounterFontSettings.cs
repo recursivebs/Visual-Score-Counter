@@ -16,7 +16,7 @@ namespace VisualScoreCounter.VSCounter.Configuration {
         public virtual float WholeNumberYOffset { get; set; } = Default_WholeNumberYOffset;
         public virtual float FractionalNumberFontSize { get; set; } = Default_FractionalNumberFontSize;
         public virtual float FractionalNumberXOffset { get; set; } = Default_FractionalNumberXOffset;
-        public virtual float FractionalNumberYOffset { get; set; } = Default_FractionalNumberXOffset;
+        public virtual float FractionalNumberYOffset { get; set; } = Default_FractionalNumberYOffset;
 
         public void Reset() {
             WholeNumberFontSize = Default_WholeNumberFontSize;
