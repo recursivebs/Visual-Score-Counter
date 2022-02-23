@@ -18,7 +18,7 @@ YouTube example: https://youtu.be/M_KphavDJSo?t=28
 5) Ensure that the default **Score** counter is disabled (otherwise you'll have two score counters enabled)
 6) In the **Counters** section, find the icon for **Visual Score Counter** to open it's settings:
 
-![image](https://user-images.githubusercontent.com/84289648/131233224-9544690b-bd1c-4553-bd57-3ecdef0ed0bd.png)
+![image](https://user-images.githubusercontent.com/84289648/155397181-11ea92de-589d-4a5a-be02-637a9c8d8574.png)
  
 For example, I use a layout like this:
   
