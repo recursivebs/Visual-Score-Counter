@@ -208,7 +208,6 @@ namespace VisualScoreCounter.VSCounter
                 Plugin.Log.Error("VisualScoreCounter : VSCounterController has a null reference to scoreManager - cannot get major percent!");
                 return 0;
             }
-
             return (int) Math.Floor(scoreManager.PercentageTotal);
         }
 
@@ -218,7 +217,9 @@ namespace VisualScoreCounter.VSCounter
                 Plugin.Log.Error("VisualScoreCounter : VSCounterController has a null reference to scoreManager - cannot get minor percent!");
                 return 0;
             }
-            return (int) ((scoreManager.PercentageTotal % 1) * 100);
+            int x = (int) ((Math.Round(scoreManager.PercentageTotal % 1, 2)) * 100) % 100;
+            Plugin.Log.Debug("MinorPercentRaw: " + scoreManager.PercentageTotal + ", MinorPercent: " + x);
+            return x;
         }
 
         private Vector3 ComputeRingSize() {
