@@ -24,6 +24,8 @@ namespace VisualScoreCounter.VSCounter.Configuration {
 		public void ResetSettings() {
 			settings.RingScale = 1.0f;
 			RaisePropertyChanged(nameof(RingScale));
+			settings.BloomRing = true;
+			RaisePropertyChanged(nameof(BloomRing));
 			settings.PercentageRingShowsNextColor = true;
 			RaisePropertyChanged(nameof(PercentageRingShowsNextColor));
 			settings.HideBaseGameRankDisplay = true;
@@ -63,6 +65,7 @@ namespace VisualScoreCounter.VSCounter.Configuration {
 		[UIAction("#reset-font")]
 		public void ResetFont() {
 			settings.CounterFontSettings.Reset();
+			RaisePropertyChanged(nameof(BloomFont));
 			RaisePropertyChanged(nameof(FractionalNumberFontSize));
 			RaisePropertyChanged(nameof(FractionalNumberXOffset));
 			RaisePropertyChanged(nameof(FractionalNumberYOffset));
@@ -70,6 +73,20 @@ namespace VisualScoreCounter.VSCounter.Configuration {
 			RaisePropertyChanged(nameof(WholeNumberXOffset));
 			RaisePropertyChanged(nameof(WholeNumberYOffset));
         }
+
+		[UIValue("bloom-ring")]
+		public virtual bool BloomRing
+		{
+			get { return settings.BloomRing; }
+			set { settings.BloomRing = value; }
+		}
+
+		[UIValue("bloom-font")]
+		public virtual bool BloomFont
+		{
+			get { return settings.BloomFont; }
+			set { settings.BloomFont = value; }
+		}
 
 		[UIValue("counter-x-offset")]
 		public virtual float CounterXOffset {
