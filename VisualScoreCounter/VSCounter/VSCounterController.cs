@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using VisualScoreCounter.Core;
 using VisualScoreCounter.Core.Configuration;
 using VisualScoreCounter.VSCounter.Configuration;
+using VisualScoreCounter.Utils;
 using UnityEngine;
 using TMPro;
 using CountersPlus.Counters.Interfaces;
@@ -102,6 +103,11 @@ namespace VisualScoreCounter.VSCounter
             percentMajorText.fontSize = config.CounterFontSettings.WholeNumberFontSize;
             percentMinorText = canvasUtility.CreateTextFromSettings(settings);
             percentMinorText.fontSize = config.CounterFontSettings.FractionalNumberFontSize;
+            if (config.BloomFont)
+            {
+                percentMajorText.font = BloomFontAssetMaker.instance.BloomFontAsset();
+                percentMinorText.font = BloomFontAssetMaker.instance.BloomFontAsset();
+            }
 
             HUDCanvas currentSettings = canvasUtility.GetCanvasSettingsFromID(settings.CanvasID);
 
@@ -120,7 +126,10 @@ namespace VisualScoreCounter.VSCounter
                 progressRing = CreateRing(canvas);
                 progressRing.rectTransform.anchoredPosition = ringAnchoredPos;
                 progressRing.transform.localScale = ComputeRingSize();
-
+                if (config.BloomRing)
+                {
+                    progressRing.material = new Material(Shader.Find("UI/Default"));
+                }
             }
 
             if (config.HideBaseGameRankDisplay) {

@@ -105,6 +105,11 @@
       <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <Private>False</Private>
+      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\UnityEngine.UI.dll</HintPath>
       <Private>False</Private>
@@ -131,6 +136,7 @@
   <ItemGroup>
     <Compile Include="Core\ScoreControllerWallCollisionDetectionPatch.cs" />
     <Compile Include="Core\ScoreHelpers.cs" />
+    <Compile Include="Utils\BloomFontAssetMaker.cs" />
     <Compile Include="Utils\ScoresaberUtil.cs" />
     <Compile Include="VSCounter\Configuration\CounterConfigController.cs" />
     <Compile Include="VSCounter\Configuration\Settings\CounterFontSettings.cs" />
