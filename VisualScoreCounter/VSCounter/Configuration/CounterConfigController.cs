@@ -24,7 +24,7 @@ namespace VisualScoreCounter.VSCounter.Configuration {
 		public void ResetSettings() {
 			settings.RingScale = 1.0f;
 			RaisePropertyChanged(nameof(RingScale));
-			settings.BloomRing = true;
+			settings.BloomRing = false;
 			RaisePropertyChanged(nameof(BloomRing));
 			settings.PercentageRingShowsNextColor = true;
 			RaisePropertyChanged(nameof(PercentageRingShowsNextColor));
@@ -84,8 +84,8 @@ namespace VisualScoreCounter.VSCounter.Configuration {
 		[UIValue("bloom-font")]
 		public virtual bool BloomFont
 		{
-			get { return settings.BloomFont; }
-			set { settings.BloomFont = value; }
+			get { return settings.CounterFontSettings.BloomFont; }
+			set { settings.CounterFontSettings.BloomFont = value; }
 		}
 
 		[UIValue("counter-x-offset")]

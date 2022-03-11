@@ -103,7 +103,7 @@ namespace VisualScoreCounter.VSCounter
             percentMajorText.fontSize = config.CounterFontSettings.WholeNumberFontSize;
             percentMinorText = canvasUtility.CreateTextFromSettings(settings);
             percentMinorText.fontSize = config.CounterFontSettings.FractionalNumberFontSize;
-            if (config.BloomFont)
+            if (config.CounterFontSettings.BloomFont)
             {
                 percentMajorText.font = BloomFontAssetMaker.instance.BloomFontAsset();
                 percentMinorText.font = BloomFontAssetMaker.instance.BloomFontAsset();
