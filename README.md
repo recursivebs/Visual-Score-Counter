@@ -34,6 +34,8 @@ The following options are available for configuration:
 
 **Ring Scale**: Adjusts the ring size by a multiple. Defaulted to 1.
 
+**Bloom (Glow) Ring**: If enabled, the ring of the counter will have bloom (glow) enabled. NOTE: Bloom must be enabled in graphics settings! Defaulted to OFF.
+
 **Hide Base Game Rank Display**: Hides the base game's rank (SS/S/A/B/C/D) and percentage counter, enabled by Advanced HUD being on. Defaulted to ON.
 
 #### Color Config
@@ -45,6 +47,9 @@ The following options are available for configuration:
 ... and on and on, until 0% :)
 
 #### Font Config
+
+**Bloom (Glow) Font**: If enabled, the font of the counter will have bloom (glow) enabled. NOTE: Bloom must be enabled in graphics settings! Defaulted to OFF.
+
 
 **Whole Number Font Size**: Size of the font used for displaying the whole number part of the accuracy percentage. Defaulted to 7.
 **Whole Number X Offset**: Moves the whole number of the accuracy percentage left/right. Defaulted to 0.

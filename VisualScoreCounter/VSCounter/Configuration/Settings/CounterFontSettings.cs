@@ -17,6 +17,7 @@ namespace VisualScoreCounter.VSCounter.Configuration {
         public virtual float FractionalNumberFontSize { get; set; } = Default_FractionalNumberFontSize;
         public virtual float FractionalNumberXOffset { get; set; } = Default_FractionalNumberXOffset;
         public virtual float FractionalNumberYOffset { get; set; } = Default_FractionalNumberYOffset;
+        public virtual bool BloomFont { get; set; } = Default_BloomFont;
 
         public void Reset() {
             WholeNumberFontSize = Default_WholeNumberFontSize;
@@ -25,6 +26,7 @@ namespace VisualScoreCounter.VSCounter.Configuration {
             FractionalNumberFontSize = Default_FractionalNumberFontSize;
             FractionalNumberXOffset = Default_FractionalNumberXOffset;
             FractionalNumberYOffset = Default_FractionalNumberYOffset;
+            BloomFont = Default_BloomFont;
         }
 
         // Defaults
@@ -34,6 +36,7 @@ namespace VisualScoreCounter.VSCounter.Configuration {
         public static float Default_FractionalNumberFontSize = 3.5f;
         public static float Default_FractionalNumberXOffset = 0.0f;
         public static float Default_FractionalNumberYOffset = -3.0f;
+        public static bool Default_BloomFont = false;
 
     }
 
