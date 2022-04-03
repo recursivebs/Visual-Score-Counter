@@ -28,6 +28,7 @@ namespace VisualScoreCounter.VSCounter
         private readonly CanvasUtility canvasUtility;
         private readonly CustomConfigModel settings;
         [Inject] private CoreGameHUDController coreGameHUD;
+        [InjectOptional] private GameplayCoreSceneSetupData sceneSetupData = null!;
 
         // Ring vars
         private readonly string multiplierImageSpriteName = "Circle";

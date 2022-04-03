@@ -10,11 +10,13 @@ using System.Linq;
 
 namespace VisualScoreCounter.Core
 {
-    public class ScoreTracker : IInitializable, IDisposable, ISaberSwingRatingCounterDidFinishReceiver, IScoreEventHandler, INoteEventHandler
+    public class ScoreTracker : IInitializable, IDisposable, IScoreEventHandler, INoteEventHandler
     {
-        private int MaxScoreIfFinished(int acc) => acc + ScoreModel.kMaxBeforeCutSwingRawScore + ScoreModel.kMaxAfterCutSwingRawScore;
+        private int MaxScoreIfFinished(int acc) => acc + ScoreModel.GetNoteScoreDefinition(NoteData.ScoringType.Normal).maxBeforeCutScore + ScoreModel.GetNoteScoreDefinition(NoteData.ScoringType.Normal).maxAfterCutScore;
 
         [InjectOptional] private GameplayCoreSceneSetupData sceneSetupData = null!;
+        [Inject] private NoteCountProcessor noteCountProcessor = null!;
+        [Inject] private PlayerHeadAndObstacleInteraction obstacleInteraction = null!;
         [Inject] private PlayerDataModel playerDataModel = null!;
 
         private readonly ScoreController scoreController;
@@ -37,8 +39,6 @@ namespace VisualScoreCounter.Core
         private float lastBaseGameScoreUpdated;
         private float lastBaseGameMaxScoreUpdated;
 
-        [Inject] private GameplayCoreSceneSetupData setupData;
-        [Inject] private NoteCountProcessor noteCountProcessor;
 
         private int notesLeft = 0;
 
@@ -75,16 +75,16 @@ namespace VisualScoreCounter.Core
             // Assign events
             if (scoreController != null)
             {
-                scoreController.noteWasMissedEvent += ScoreController_noteWasMissedEvent;
-                scoreController.noteWasCutEvent += ScoreController_noteWasCutEvent;
+                scoreController.scoringForNoteFinishedEvent += ScoreController_scoringForNoteFinishedEvent;
+
             }
 
-            ScoreControllerWallCollisionDetectionPatch.wallCollisionEvent += WallCollisionDetector_wallCollisionEvent;
+            obstacleInteraction.headDidEnterObstaclesEvent += WallCollisionDetector_wallCollisionEvent;
 
             // Initialize Note Counter
-            if (setupData.practiceSettings != null && setupData.practiceSettings.startInAdvanceAndClearNotes)
+            if (sceneSetupData.practiceSettings != null && sceneSetupData.practiceSettings.startInAdvanceAndClearNotes)
             {
-                float startTime = setupData.practiceSettings.startSongTime;
+                float startTime = sceneSetupData.practiceSettings.startSongTime;
                 // This LINQ statement is to ensure compatibility with Practice Mode / Practice Plugin
                 notesLeft = noteCountProcessor.Data.Count(x => x.time > startTime);
             }
@@ -104,12 +104,10 @@ namespace VisualScoreCounter.Core
         public void Dispose()
         {
             // Unassign events
-            if (scoreController != null)
-            {
-                scoreController.noteWasMissedEvent -= ScoreController_noteWasMissedEvent;
-                scoreController.noteWasCutEvent -= ScoreController_noteWasCutEvent;
+            if (scoreController != null) {
+                scoreController.scoringForNoteFinishedEvent -= ScoreController_scoringForNoteFinishedEvent;
             }
-            ScoreControllerWallCollisionDetectionPatch.wallCollisionEvent -= WallCollisionDetector_wallCollisionEvent;
+            obstacleInteraction.headDidEnterObstaclesEvent -= WallCollisionDetector_wallCollisionEvent;
         }
 
         private void OnBreakCombo()
@@ -173,78 +171,42 @@ namespace VisualScoreCounter.Core
             OnMiss(noteData);
         }
 
-        private void ScoreController_noteWasCutEvent(NoteData noteData, in NoteCutInfo noteCutInfo, int _)
-        {
-            // Ignore bombs
-            if (noteData.colorType == ColorType.None)
-            {
+
+        private void ScoreController_scoringForNoteFinishedEvent(ScoringElement scoringElement) {
+
+
+            if (scoringElement.noteData.colorType == ColorType.None) {
                 // We hit a bomb!
                 OnBreakCombo();
                 return;
             }
 
-            if (!noteCutInfo.allIsOK)
-            {
+
+            if (scoringElement is MissScoringElement miss) {
+                int mult = liveMultiplier;
+                int fcMult = GetMultiplier(noteCount);
+                OnBreakCombo();
+                scoreManager.AddScore(scoringElement.noteData.colorType, 0, 1, fcMult);
+            }
+
+
+            if (scoringElement is BadCutScoringElement badCut) {
                 // We have a bad cut!
                 noteCount++;
-                OnMiss(noteData);
+                OnMiss(scoringElement.noteData);
                 return;
             }
 
-            // And ignore bad cuts. But do count them for proper application of the multiplier
-            if (noteCutInfo.allIsOK)
-            {
 
-                noteCount++;
-                OnGainCombo();
-
-                // Track cut data
-                swingCounterCutData.Add(noteCutInfo.swingRatingCounter, new CutData(noteData.colorType, noteCutInfo.cutDistanceToCenter, noteCount, combo));
-                noteCutInfo.swingRatingCounter.RegisterDidFinishReceiver(this);
-
-                // Add provisional score assuming it'll be a full swing to make it feel more responsive even though it may be temporarily incorrect
-                ScoreModel.RawScoreWithoutMultiplier(noteCutInfo.swingRatingCounter, noteCutInfo.cutDistanceToCenter, out _, out _, out int acc);
-                scoreManager.AddScore(noteData.colorType, MaxScoreIfFinished(acc), liveMultiplier, GetMultiplier(noteCount));
-
+            if (scoringElement.noteData.scoringType != NoteData.ScoringType.Normal) {
+                // No support for new notes yet.
+                return;
             }
+
+            scoreManager.AddScore(scoringElement.noteData.colorType, scoringElement.cutScore, liveMultiplier, GetMultiplier(noteCount));
 
         }
 
-        public void HandleSaberSwingRatingCounterDidFinish(ISaberSwingRatingCounter saberSwingRatingCounter)
-        {
-            if (swingCounterCutData.TryGetValue(saberSwingRatingCounter, out CutData cutData))
-            {
-                // Calculate difference between previously applied score and actual score
-                int diffAngleCutScore = DifferenceFromProvisionalScore(saberSwingRatingCounter, cutData.cutDistanceToCenter);
-
-                // If the previously applied score was NOT correct (aka, it was a full NOT swing) -> Update score
-                if (diffAngleCutScore > 0)
-                {
-                    scoreManager.SubtractScore(cutData.colorType, diffAngleCutScore, liveMultiplier, GetMultiplier(cutData.noteCount));
-                }
-
-                // Remove cut data since it won't be needed again.
-                swingCounterCutData.Remove(saberSwingRatingCounter);
-            }
-            else
-            {
-                Plugin.Log.Error("ScoreTracker, HandleSaberSwingRatingCounterDidFinish : Failed to get cutData from swingCounterCutData!");
-            }
-
-            // Unregister saber swing rating counter.
-            saberSwingRatingCounter.UnregisterDidFinishReceiver(this);
-        }
-
-        private int DifferenceFromProvisionalScore(ISaberSwingRatingCounter saberSwingRatingCounter, float cutDistanceToCenter)
-        {
-            // note: Accuracy won't change over time, therefore it can be ignored in the calculation since it'll just cancel out.
-            ScoreModel.RawScoreWithoutMultiplier(saberSwingRatingCounter, cutDistanceToCenter, out int preCut, out int postCut, out _);
-
-            int maxAngleCutScore = ScoreModel.kMaxBeforeCutSwingRawScore + ScoreModel.kMaxAfterCutSwingRawScore;
-            int ratingAngleCutScore = preCut + postCut;
-
-            return maxAngleCutScore - ratingAngleCutScore;
-        }
 
         public bool IsAtEndOfSong()
         {

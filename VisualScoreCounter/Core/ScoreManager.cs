@@ -4,7 +4,11 @@ using Zenject;
 using System.Collections.Generic;
 using System.Globalization;
 using UnityEngine;
+using CountersPlus.Counters.Custom;
+using CountersPlus.Counters.Interfaces;
 using static PlayerSaveData;
+using CountersPlus.Counters.NoteCountProcessors;
+using System.Linq;
 
 namespace VisualScoreCounter.Core
 {
@@ -34,6 +38,9 @@ namespace VisualScoreCounter.Core
         public int MaxScoreB { get; private set; }
         public int ScoreAtCurrentPercentage => CalculateScoreFromCurrentPercentage();
 
+        [Inject] private GameplayCoreSceneSetupData setupData;
+        [Inject] private NoteCountProcessor noteCountProcessor;
+
         public ScoreManager() {
             ResetScore();
         }
@@ -61,7 +68,10 @@ namespace VisualScoreCounter.Core
             ResetScore();
             PlayerLevelStatsData stats = playerDataModel.playerData.GetPlayerLevelStatsData(beatmap);
             Highscore = stats.highScore;
-            MaxScoreAtLevelStart = ScoreHelpers.CalculateMaxScore(beatmap.beatmapData.cuttableNotesCount);
+            float startTime = setupData.practiceSettings.startSongTime;
+            // This LINQ statement is to ensure compatibility with Practice Mode / Practice Plugin
+            int notesLeft = noteCountProcessor.Data.Count(x => x.time > startTime);
+            MaxScoreAtLevelStart = ScoreHelpers.CalculateMaxScore(notesLeft);
             InvokeScoreUpdate();
         }
 
@@ -103,7 +113,7 @@ namespace VisualScoreCounter.Core
                 double preMaxScoreA = MaxScoreA;
 
                 ScoreA += score * comboMultiplier;
-                MaxScoreA += ScoreModel.kMaxCutRawScore * fcMultiplier;
+                MaxScoreA += ScoreModel.GetNoteScoreDefinition(NoteData.ScoringType.Normal).maxCutScore * fcMultiplier;
 
             } else if (colorType == ColorType.ColorB) {
 
@@ -111,7 +121,8 @@ namespace VisualScoreCounter.Core
                 double preMaxScoreB = MaxScoreB;
 
                 ScoreB += score * comboMultiplier;
-                MaxScoreB += ScoreModel.kMaxCutRawScore * fcMultiplier;
+                MaxScoreB += ScoreModel.GetNoteScoreDefinition(NoteData.ScoringType.Normal).maxCutScore * fcMultiplier;
+
             }
 
             // Inform listeners that the score has updated
@@ -125,12 +136,12 @@ namespace VisualScoreCounter.Core
             if (colorType == ColorType.ColorA)
             {
                 ScoreA -= score * comboMultiplier;
-                if (subtractFromMaxScore) MaxScoreA -= ScoreModel.kMaxCutRawScore * fcMultiplier;
+                if (subtractFromMaxScore) MaxScoreA -= ScoreModel.GetNoteScoreDefinition(NoteData.ScoringType.Normal).maxCutScore * fcMultiplier;
             }
             else if (colorType == ColorType.ColorB)
             {
                 ScoreB -= score * comboMultiplier;
-                if (subtractFromMaxScore) MaxScoreB -= ScoreModel.kMaxCutRawScore * fcMultiplier;
+                if (subtractFromMaxScore) MaxScoreB -= ScoreModel.GetNoteScoreDefinition(NoteData.ScoringType.Normal).maxCutScore * fcMultiplier;
             }
 
             // Inform listeners that the score has updated
