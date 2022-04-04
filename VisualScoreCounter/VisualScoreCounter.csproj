@@ -145,8 +145,6 @@
     <Compile Include="VSCounter\Configuration\Settings\PercentageColorSettings.cs" />
     <Compile Include="VSCounter\VSCounterController.cs" />
     <Compile Include="Core\Configuration\PluginConfig.cs" />
-    <Compile Include="Core\ScoreManager.cs" />
-    <Compile Include="Core\ScoreTracker.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -34,15 +34,6 @@ namespace VisualScoreCounter
 			Instance = this;
 			Log = logger;
 
-			zenjector.Install(Location.App, (DiContainer Container) =>
-			{
-				Container.BindInterfacesAndSelfTo<ScoreManager>().AsSingle();
-			});
-			zenjector.Install(Location.StandardPlayer, (DiContainer Container) =>
-			{
-				Container.BindInterfacesAndSelfTo<ScoreTracker>().AsSingle();
-			});
-
 			Log.Info($"{PluginName} initialized.");
 		}
 
