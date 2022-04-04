@@ -18,6 +18,7 @@ using IPA.Utilities;
 using UnityEngine.UI;
 using BeatSaberMarkupLanguage;
 using Zenject;
+using Tweening;
 
 namespace VisualScoreCounter.VSCounter
 {
@@ -29,15 +30,18 @@ namespace VisualScoreCounter.VSCounter
         [Inject] private CoreGameHUDController coreGameHUD;
         [Inject] private readonly RelativeScoreAndImmediateRankCounter relativeScoreAndImmediateRank;
         [Inject] ScoreController scoreController;
+        [Inject] TimeTweeningManager uwuTweenyManager;
 
         // Ring vars
         private readonly string multiplierImageSpriteName = "Circle";
         private readonly Vector3 ringSize = Vector3.one * 1.175f;
-        private ImageView progressRing;
-        private float _prevRelativeScore = 0.0f;
+        private float _currentPercentage = 0.0f;
 
         private TMP_Text percentMajorText;
         private TMP_Text percentMinorText;
+
+        private ImageView progressRing;
+        private VSCounterTweenHelper vsCounterTweenHelper;
 
         public VSCounterController(CanvasUtility canvasUtility, CustomConfigModel settings)
         {
@@ -88,7 +92,8 @@ namespace VisualScoreCounter.VSCounter
         private void InitVSCounter()
         {
 
-            _prevRelativeScore = 0.0f;
+
+            _currentPercentage = 100.0f;
             percentMajorText = canvasUtility.CreateTextFromSettings(settings);
             percentMajorText.fontSize = config.CounterFontSettings.WholeNumberFontSize;
             percentMinorText = canvasUtility.CreateTextFromSettings(settings);
@@ -120,6 +125,7 @@ namespace VisualScoreCounter.VSCounter
                 {
                     progressRing.material = new Material(Shader.Find("UI/Default"));
                 }
+                vsCounterTweenHelper = progressRing.gameObject.AddComponent<VSCounterTweenHelper>();
             }
 
             if (config.HideBaseGameRankDisplay) {
@@ -162,14 +168,18 @@ namespace VisualScoreCounter.VSCounter
 
         private void UpdateCounter()
         {
-            UpdateRing();
-            UpdateScoreText();
+            double percentage = GetCurrentPercentage();
+            uwuTweenyManager.KillAllTweens(progressRing);
+            float startVal = _currentPercentage;
+            FloatTween tween = new FloatTween(startVal, (float) percentage, val => {
+                _currentPercentage = val;
+                UpdateRing(_currentPercentage);
+                UpdateScoreText(_currentPercentage);
+            }, vsCounterTweenHelper.animationTime, vsCounterTweenHelper.easeType);
+            uwuTweenyManager.AddTween(tween, progressRing);
         }
 
-        private void UpdateRing()
-        {
-
-            double percentage = GetCurrentPercentage();
+        private void UpdateRing(float percentage) {
 
             Color nextColor = GetColorForPercent(percentage);
 
@@ -188,12 +198,11 @@ namespace VisualScoreCounter.VSCounter
 
         }
 
-        private void UpdateScoreText()
+        private void UpdateScoreText(float percentage)
         {
             int majorPercent = GetCurrentMajorPercent();
             int minorPercent = GetCurrentMinorPercent();
 
-            double percentage = GetCurrentPercentage();
             Color percentMajorColor = GetColorForPercent(percentage);
             Color percentMinorColor = percentMajorColor;
             if (config.PercentageRingShowsNextColor)
@@ -224,7 +233,7 @@ namespace VisualScoreCounter.VSCounter
             return new Vector2(config.CounterXOffset, config.CounterYOffset);
         }
 
-        private Color GetColorForPercent(double Score)
+        private Color GetColorForPercent(float Score)
         {
             Color outColor = Color.white;
             if (Score >= 100.0f)
@@ -345,11 +354,7 @@ namespace VisualScoreCounter.VSCounter
         }
 
         private float GetCurrentPercentage() {
-            if (Mathf.Abs(this._prevRelativeScore - relativeScoreAndImmediateRank.relativeScore) >= 0.001f)
-            {
-                _prevRelativeScore = relativeScoreAndImmediateRank.relativeScore;
-            }
-            float relativeScore = _prevRelativeScore * 100;
+            float relativeScore = relativeScoreAndImmediateRank.relativeScore * 100;
             if (relativeScore <= 0)
             {
                 relativeScore = 100.0f;
