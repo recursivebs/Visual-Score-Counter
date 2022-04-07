@@ -11,7 +11,7 @@ namespace VisualScoreCounter.VSCounter
     {
         public VSCounterTweenHelper()
         {
-            animationTime = 0.25f;
+            animationTime = 0.20f;
             easeType = EaseType.InExpo;
         }
 
