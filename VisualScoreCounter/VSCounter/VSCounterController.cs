@@ -18,35 +18,40 @@ using IPA.Utilities;
 using UnityEngine.UI;
 using BeatSaberMarkupLanguage;
 using Zenject;
+using Tweening;
 
 namespace VisualScoreCounter.VSCounter
 {
     public class VSCounterController : ICounter {
 
         private CounterSettings config;
-        private readonly ScoreManager scoreManager;
         private readonly CanvasUtility canvasUtility;
         private readonly CustomConfigModel settings;
         [Inject] private CoreGameHUDController coreGameHUD;
+        [Inject] private readonly RelativeScoreAndImmediateRankCounter relativeScoreAndImmediateRank;
+        [Inject] ScoreController scoreController;
+        [Inject] TimeTweeningManager uwuTweenyManager;
 
         // Ring vars
         private readonly string multiplierImageSpriteName = "Circle";
         private readonly Vector3 ringSize = Vector3.one * 1.175f;
-        private ImageView progressRing;
+        private float _currentPercentage = 0.0f;
 
         private TMP_Text percentMajorText;
         private TMP_Text percentMinorText;
 
-        public VSCounterController(ScoreManager scoreManager, CanvasUtility canvasUtility, CustomConfigModel settings, GameplayCoreSceneSetupData sceneSetupData)
+        private ImageView progressRing;
+        private VSCounterTweenHelper vsCounterTweenHelper;
+
+        public VSCounterController(CanvasUtility canvasUtility, CustomConfigModel settings)
         {
-            this.scoreManager = scoreManager;
             this.canvasUtility = canvasUtility;
             this.settings = settings;
             config = PluginConfig.Instance.CounterSettings;
         }
 
         public void CounterDestroy() {
-            scoreManager.OnScoreUpdate -= ScoreManager_OnScoreUpdate;
+            relativeScoreAndImmediateRank.relativeScoreOrImmediateRankDidChangeEvent -= UpdateCounter;
         }
 
         public void CounterInit() {
@@ -57,22 +62,15 @@ namespace VisualScoreCounter.VSCounter
 
             InitVSCounter();
 
-            scoreManager.OnScoreUpdate += ScoreManager_OnScoreUpdate;
-
         }
 
         public bool HasNullReferences()
         {
-            if (scoreManager == null || canvasUtility == null || settings == null)
+            if (canvasUtility == null || settings == null)
             {
 
                 Plugin.Log.Error("VisualScoreCounter : VSCounterController has a null reference and cannot initialize! Please file an issue on our github.");
                 Plugin.Log.Error("The following objects are null:");
-
-                if (scoreManager == null)
-                {
-                    Plugin.Log.Error("- ScoreManager");
-                }
 
                 if (canvasUtility == null)
                 {
@@ -91,14 +89,11 @@ namespace VisualScoreCounter.VSCounter
 
         }
 
-        private void ScoreManager_OnScoreUpdate(object sender, EventArgs e)
-        {
-            UpdateCounter();
-        }
-
         private void InitVSCounter()
         {
 
+
+            _currentPercentage = 100.0f;
             percentMajorText = canvasUtility.CreateTextFromSettings(settings);
             percentMajorText.fontSize = config.CounterFontSettings.WholeNumberFontSize;
             percentMinorText = canvasUtility.CreateTextFromSettings(settings);
@@ -130,6 +125,7 @@ namespace VisualScoreCounter.VSCounter
                 {
                     progressRing.material = new Material(Shader.Find("UI/Default"));
                 }
+                vsCounterTweenHelper = progressRing.gameObject.AddComponent<VSCounterTweenHelper>();
             }
 
             if (config.HideBaseGameRankDisplay) {
@@ -146,6 +142,7 @@ namespace VisualScoreCounter.VSCounter
 
             percentMajorText.rectTransform.anchoredPosition += new Vector2(config.CounterFontSettings.WholeNumberXOffset + config.CounterXOffset, config.CounterFontSettings.WholeNumberYOffset + config.CounterYOffset);
             percentMinorText.rectTransform.anchoredPosition += new Vector2(config.CounterFontSettings.FractionalNumberXOffset + config.CounterXOffset, config.CounterFontSettings.FractionalNumberYOffset + config.CounterYOffset);
+            relativeScoreAndImmediateRank.relativeScoreOrImmediateRankDidChangeEvent += UpdateCounter;
 
         }
 
@@ -171,39 +168,46 @@ namespace VisualScoreCounter.VSCounter
 
         private void UpdateCounter()
         {
-            UpdateRing();
-            UpdateScoreText();
+            double percentage = GetCurrentPercentage();
+            uwuTweenyManager.KillAllTweens(progressRing);
+            float startVal = _currentPercentage;
+            FloatTween tween = new FloatTween(startVal, (float) percentage, val => {
+                _currentPercentage = val;
+                UpdateRing(_currentPercentage);
+                UpdateScoreText(_currentPercentage);
+            }, vsCounterTweenHelper.animationTime, vsCounterTweenHelper.easeType);
+            uwuTweenyManager.AddTween(tween, progressRing);
         }
 
-        private void UpdateRing()
-        {
-
-            double percentage = scoreManager.PercentageTotal;
+        private void UpdateRing(float percentage) {
 
             Color nextColor = GetColorForPercent(percentage);
+
             if (config.PercentageRingShowsNextColor) {
-                nextColor = GetColorForPercent(scoreManager.PercentageTotal + 1);
+                nextColor = GetColorForPercent(percentage + 1);
             }
 
             if (progressRing) {
                 progressRing.color = nextColor;
             }
+
             float ringFillAmount = ((float) percentage) % 1;
+
             progressRing.fillAmount = ringFillAmount;
             progressRing.SetVerticesDirty();
 
         }
 
-        private void UpdateScoreText()
+        private void UpdateScoreText(float percentage)
         {
             int majorPercent = GetCurrentMajorPercent();
             int minorPercent = GetCurrentMinorPercent();
 
-            Color percentMajorColor = GetColorForPercent(scoreManager.PercentageTotal);
+            Color percentMajorColor = GetColorForPercent(percentage);
             Color percentMinorColor = percentMajorColor;
             if (config.PercentageRingShowsNextColor)
             {
-                percentMinorColor = GetColorForPercent(scoreManager.PercentageTotal + 1);
+                percentMinorColor = GetColorForPercent(percentage + 1);
             }
             percentMajorText.text = string.Format("{0:D2}", majorPercent);
             percentMajorText.color = percentMajorColor;
@@ -212,22 +216,12 @@ namespace VisualScoreCounter.VSCounter
         }
 
         private int GetCurrentMajorPercent() {
-            if (scoreManager == null)
-            {
-                Plugin.Log.Error("VisualScoreCounter : VSCounterController has a null reference to scoreManager - cannot get major percent!");
-                return 0;
-            }
-            return (int) Math.Floor(scoreManager.PercentageTotal);
+            return (int) Math.Floor(GetCurrentPercentage());
         }
 
         private int GetCurrentMinorPercent() {
-            if (scoreManager == null)
-            {
-                Plugin.Log.Error("VisualScoreCounter : VSCounterController has a null reference to scoreManager - cannot get minor percent!");
-                return 0;
-            }
-            int x = (int) ((Math.Round(scoreManager.PercentageTotal % 1, 2)) * 100) % 100;
-            Plugin.Log.Debug("MinorPercentRaw: " + scoreManager.PercentageTotal + ", MinorPercent: " + x);
+            int x = (int) ((Math.Round(GetCurrentPercentage() % 1, 2)) * 100) % 100;
+            Plugin.Log.Debug("MinorPercentRaw: " + GetCurrentPercentage() + ", MinorPercent: " + x);
             return x;
         }
 
@@ -239,7 +233,7 @@ namespace VisualScoreCounter.VSCounter
             return new Vector2(config.CounterXOffset, config.CounterYOffset);
         }
 
-        private Color GetColorForPercent(double Score)
+        private Color GetColorForPercent(float Score)
         {
             Color outColor = Color.white;
             if (Score >= 100.0f)
@@ -357,6 +351,15 @@ namespace VisualScoreCounter.VSCounter
 
             return outColor;
 
+        }
+
+        private float GetCurrentPercentage() {
+            float relativeScore = relativeScoreAndImmediateRank.relativeScore * 100;
+            if (relativeScore <= 0)
+            {
+                relativeScore = 100.0f;
+            }
+            return relativeScore;
         }
 
     }

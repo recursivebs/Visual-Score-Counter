@@ -63,8 +63,13 @@
     <Reference Include="Counters+">
       <HintPath>C:\Program Files\Oculus\Software\Software\hyperbolic-magnetism-beat-saber\Plugins\Counters+.dll</HintPath>
     </Reference>
-    <Reference Include="GameplayCore">
-      <HintPath>C:\Program Files\Oculus\Software\Software\hyperbolic-magnetism-beat-saber\Beat Saber_Data\Managed\GameplayCore.dll</HintPath>
+    <Reference Include="GameplayCore, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\GameplayCore.dll</HintPath>
+    </Reference>
+    <Reference Include="HMLib, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\HMLib.dll</HintPath>
     </Reference>
     <Reference Include="SiraUtil, Version=2.5.5.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -79,10 +84,6 @@
     <Reference Include="System.Xml" />
     <Reference Include="Main">
       <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\Main.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="HMLib">
-      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\HMLib.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="HMUI">
@@ -126,25 +127,25 @@
       <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\UnityEngine.VRModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Zenject">
-      <HintPath>C:\Program Files\Oculus\Software\Software\hyperbolic-magnetism-beat-saber\Beat Saber_Data\Managed\Zenject.dll</HintPath>
+    <Reference Include="Zenject, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\Zenject.dll</HintPath>
     </Reference>
-    <Reference Include="Zenject-usage">
-      <HintPath>C:\Program Files\Oculus\Software\Software\hyperbolic-magnetism-beat-saber\Beat Saber_Data\Managed\Zenject-usage.dll</HintPath>
+    <Reference Include="Zenject-usage, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\Zenject-usage.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Core\ScoreControllerWallCollisionDetectionPatch.cs" />
     <Compile Include="Core\ScoreHelpers.cs" />
     <Compile Include="Utils\BloomFontAssetMaker.cs" />
     <Compile Include="Utils\ScoresaberUtil.cs" />
+    <Compile Include="VSCounter\VSCounterTweenHelper.cs" />
     <Compile Include="VSCounter\Configuration\CounterConfigController.cs" />
     <Compile Include="VSCounter\Configuration\Settings\CounterFontSettings.cs" />
     <Compile Include="VSCounter\Configuration\Settings\PercentageColorSettings.cs" />
     <Compile Include="VSCounter\VSCounterController.cs" />
     <Compile Include="Core\Configuration\PluginConfig.cs" />
-    <Compile Include="Core\ScoreManager.cs" />
-    <Compile Include="Core\ScoreTracker.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
