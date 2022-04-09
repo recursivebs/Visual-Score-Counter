@@ -168,7 +168,10 @@ namespace VisualScoreCounter.VSCounter
 
         private void UpdateCounter()
         {
-            double percentage = GetCurrentPercentage();
+            float percentage = GetCurrentPercentage();
+            UpdateRing(percentage);
+            UpdateScoreText(percentage);
+            /*
             uwuTweenyManager.KillAllTweens(progressRing);
             float startVal = _currentPercentage;
             FloatTween tween = new FloatTween(startVal, (float) percentage, val => {
@@ -177,6 +180,7 @@ namespace VisualScoreCounter.VSCounter
                 UpdateScoreText(_currentPercentage);
             }, vsCounterTweenHelper.animationTime, vsCounterTweenHelper.easeType);
             uwuTweenyManager.AddTween(tween, progressRing);
+            */
         }
 
         private void UpdateRing(float percentage) {
