@@ -12,6 +12,7 @@ using TMPro;
 using CountersPlus.Counters.Interfaces;
 using CountersPlus.Custom;
 using CountersPlus.Utils;
+using CountersPlus.Counters.NoteCountProcessors;
 using HMUI;
 using CountersPlus.ConfigModels;
 using IPA.Utilities;
@@ -19,10 +20,13 @@ using UnityEngine.UI;
 using BeatSaberMarkupLanguage;
 using Zenject;
 using Tweening;
+using System.Reflection;
 
 namespace VisualScoreCounter.VSCounter
 {
-    public class VSCounterController : ICounter {
+
+    public class VSCounterController : ICounter, INoteEventHandler
+    {
 
         private CounterSettings config;
         private readonly CanvasUtility canvasUtility;
@@ -31,17 +35,22 @@ namespace VisualScoreCounter.VSCounter
         [Inject] private readonly RelativeScoreAndImmediateRankCounter relativeScoreAndImmediateRank;
         [Inject] ScoreController scoreController;
         [Inject] TimeTweeningManager uwuTweenyManager;
+        [Inject] private GameplayCoreSceneSetupData setupData;
+        [Inject] private NoteCountProcessor noteCountProcessor;
 
         // Ring vars
         private readonly string multiplierImageSpriteName = "Circle";
         private readonly Vector3 ringSize = Vector3.one * 1.175f;
         private float _currentPercentage = 0.0f;
+        private bool bIsInReplay = false;
 
         private TMP_Text percentMajorText;
         private TMP_Text percentMinorText;
 
         private ImageView progressRing;
         private VSCounterTweenHelper vsCounterTweenHelper;
+
+        private int notesLeft = 0;
 
         public VSCounterController(CanvasUtility canvasUtility, CustomConfigModel settings)
         {
@@ -50,13 +59,46 @@ namespace VisualScoreCounter.VSCounter
             config = PluginConfig.Instance.CounterSettings;
         }
 
-        public void CounterDestroy() {
-            relativeScoreAndImmediateRank.relativeScoreOrImmediateRankDidChangeEvent -= UpdateCounter;
+        static MethodBase ScoreSaber_playbackEnabled;
+
+        public void CounterDestroy()
+        {
+            relativeScoreAndImmediateRank.relativeScoreOrImmediateRankDidChangeEvent -= OnRelativeScoreUpdate;
+            scoreController.scoringForNoteFinishedEvent -= ScoreController_scoringForNoteFinishedEvent;
         }
 
-        public void CounterInit() {
+        public void CounterInit()
+        {
 
-            if (HasNullReferences()) {
+            ScoreSaber_playbackEnabled =
+                IPA.Loader.PluginManager.GetPluginFromId("ScoreSaber")?
+                .Assembly.GetType("ScoreSaber.Core.ReplaySystem.HarmonyPatches.PatchHandleHMDUnmounted")?
+                .GetMethod("Prefix", BindingFlags.Static | BindingFlags.NonPublic);
+
+            if (setupData.practiceSettings != null && setupData.practiceSettings.startInAdvanceAndClearNotes)
+            {
+                float startTime = setupData.practiceSettings.startSongTime;
+                // This LINQ statement is to ensure compatibility with Practice Mode / Practice Plugin
+                notesLeft = noteCountProcessor.Data.Count(x => x.time > startTime);
+            } else {
+                notesLeft = noteCountProcessor.NoteCount;
+            }
+
+            try
+            {
+                bIsInReplay = ScoreSaber_playbackEnabled != null && !(bool)ScoreSaber_playbackEnabled.Invoke(null, null);
+            }
+            catch { }
+
+            if (bIsInReplay)
+            {
+                Plugin.Log.Debug("VisualScoreCounter : We are in a replay!");
+            } else {
+                Plugin.Log.Debug("VisualScoreCounter : We are NOT in a replay!");
+            }
+
+            if (HasNullReferences())
+            {
                 return;
             }
 
@@ -128,7 +170,8 @@ namespace VisualScoreCounter.VSCounter
                 vsCounterTweenHelper = progressRing.gameObject.AddComponent<VSCounterTweenHelper>();
             }
 
-            if (config.HideBaseGameRankDisplay) {
+            if (config.HideBaseGameRankDisplay)
+            {
 
                 GameObject baseGameRank = FieldAccessor<CoreGameHUDController, GameObject>.GetAccessor("_immediateRankGO")(ref coreGameHUD);
                 UnityEngine.Object.Destroy(baseGameRank.gameObject);
@@ -142,8 +185,40 @@ namespace VisualScoreCounter.VSCounter
 
             percentMajorText.rectTransform.anchoredPosition += new Vector2(config.CounterFontSettings.WholeNumberXOffset + config.CounterXOffset, config.CounterFontSettings.WholeNumberYOffset + config.CounterYOffset);
             percentMinorText.rectTransform.anchoredPosition += new Vector2(config.CounterFontSettings.FractionalNumberXOffset + config.CounterXOffset, config.CounterFontSettings.FractionalNumberYOffset + config.CounterYOffset);
-            relativeScoreAndImmediateRank.relativeScoreOrImmediateRankDidChangeEvent += UpdateCounter;
+            relativeScoreAndImmediateRank.relativeScoreOrImmediateRankDidChangeEvent += OnRelativeScoreUpdate;
+            scoreController.scoringForNoteFinishedEvent += ScoreController_scoringForNoteFinishedEvent;
 
+        }
+
+
+        public void OnNoteCut(NoteData data, NoteCutInfo info)
+        {
+            if (ShouldProcessNote(data) && !noteCountProcessor.ShouldIgnoreNote(data)) DecrementCounter();
+        }
+
+
+        public void OnNoteMiss(NoteData data)
+        {
+            if (ShouldProcessNote(data) && !noteCountProcessor.ShouldIgnoreNote(data)) DecrementCounter();
+        }
+
+
+        private bool ShouldProcessNote(NoteData data)
+            => data.gameplayType switch
+            {
+                NoteData.GameplayType.Normal => true,
+                NoteData.GameplayType.BurstSliderHead => true,
+                _ => false,
+            };
+
+
+        private void DecrementCounter()
+        {
+            --notesLeft;
+            if (notesLeft == 0)
+            {
+                UpdateCounter();
+            }
         }
 
 
@@ -171,31 +246,24 @@ namespace VisualScoreCounter.VSCounter
             float percentage = GetCurrentPercentage();
             UpdateRing(percentage);
             UpdateScoreText(percentage);
-            /*
-            uwuTweenyManager.KillAllTweens(progressRing);
-            float startVal = _currentPercentage;
-            FloatTween tween = new FloatTween(startVal, (float) percentage, val => {
-                _currentPercentage = val;
-                UpdateRing(_currentPercentage);
-                UpdateScoreText(_currentPercentage);
-            }, vsCounterTweenHelper.animationTime, vsCounterTweenHelper.easeType);
-            uwuTweenyManager.AddTween(tween, progressRing);
-            */
         }
 
-        private void UpdateRing(float percentage) {
+        private void UpdateRing(float percentage)
+        {
 
             Color nextColor = GetColorForPercent(percentage);
 
-            if (config.PercentageRingShowsNextColor) {
+            if (config.PercentageRingShowsNextColor)
+            {
                 nextColor = GetColorForPercent(percentage + 1);
             }
 
-            if (progressRing) {
+            if (progressRing)
+            {
                 progressRing.color = nextColor;
             }
 
-            float ringFillAmount = ((float) percentage) % 1;
+            float ringFillAmount = ((float)percentage) % 1;
 
             progressRing.fillAmount = ringFillAmount;
             progressRing.SetVerticesDirty();
@@ -219,21 +287,26 @@ namespace VisualScoreCounter.VSCounter
             percentMinorText.color = percentMinorColor;
         }
 
-        private int GetCurrentMajorPercent() {
-            return (int) Math.Floor(GetCurrentPercentage());
+        private int GetCurrentMajorPercent()
+        {
+            int majorPart = (int)Math.Floor(GetCurrentPercentage());
+            int minorPart = (int)Math.Round(GetCurrentPercentage() % 1, 2);
+            return majorPart + minorPart;
         }
 
-        private int GetCurrentMinorPercent() {
-            int x = (int) ((Math.Round(GetCurrentPercentage() % 1, 2)) * 100) % 100;
-            Plugin.Log.Debug("MinorPercentRaw: " + GetCurrentPercentage() + ", MinorPercent: " + x);
+        private int GetCurrentMinorPercent()
+        {
+            int x = (int)((Math.Round(GetCurrentPercentage() % 1, 2)) * 100) % 100;
             return x;
         }
 
-        private Vector3 ComputeRingSize() {
+        private Vector3 ComputeRingSize()
+        {
             return ((ringSize * config.RingScale) / 10.0f);
         }
 
-        private Vector2 GetCounterOffset() {
+        private Vector2 GetCounterOffset()
+        {
             return new Vector2(config.CounterXOffset, config.CounterYOffset);
         }
 
@@ -357,14 +430,35 @@ namespace VisualScoreCounter.VSCounter
 
         }
 
-        private float GetCurrentPercentage() {
+
+        private float GetCurrentPercentage()
+        {
+
             float relativeScore = relativeScoreAndImmediateRank.relativeScore * 100;
             if (relativeScore <= 0)
             {
                 relativeScore = 100.0f;
             }
-            return relativeScore;
+            return (float) Math.Round(relativeScore, 2);
+        }
+
+        private void OnRelativeScoreUpdate()
+        {
+            // Only use this event if we're not in a replay, since updates in game in real time are actually accurate
+            if (!bIsInReplay || notesLeft < 8)
+            {
+                UpdateCounter();
+            }
+        }
+
+        private void ScoreController_scoringForNoteFinishedEvent(ScoringElement scoringElement)
+        {
+            // Only use this event if we're in a replay, since replay scoring is very scuffed
+            if (bIsInReplay && notesLeft > 8) {
+                UpdateCounter();
+            }
         }
 
     }
+
 }
